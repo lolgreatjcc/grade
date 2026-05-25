@@ -15,7 +15,7 @@ const shareServiceClient = ShareServiceClient.fromConnectionString(connectionStr
 const path = require('path');
 const multer = require('multer');
 
-// if using local storage
+// if using local storage, COMMENT IF AZURE
 // const storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
 //         cb(null, './mediaUploadTemp/')
@@ -25,7 +25,7 @@ const multer = require('multer');
 //     }
 // })
 
-// if using Azure
+// if using Azure, COMMENT IF LOCAL
 const storage = multer.memoryStorage();
 
 const upload = multer({
@@ -90,22 +90,20 @@ router.post('/grade', (req, res) => {
                 return;
             }
 
-            let filesProcessed = 0;
-
-            // Azure implementation
+            // Azure implementation, COMMENT IF LOCAL
             let answerKeyId = uuidv7();
             let answerKeyFileName = `${answerKeyId}.pdf`;
             let attemptId = uuidv7();
             let attemptFileName = `${attemptId}.pdf`;
             let userId = '019e555d-94ed-7336-ba9f-2b0622f5370f'; //dummy value for now
 
-            // upload into azure storage
+            // upload into azure storage, COMMENT IF LOCAL
             const shareName = process.env.AZUREFILESHARENAME;
             const directory = process.env.AZUREFILEDIRECTORY;
             await azureFileUpload(shareServiceClient, shareName, directory, files[0].buffer, attemptFileName);
             await azureFileUpload(shareServiceClient, shareName, directory, files[1].buffer, answerKeyFileName);
 
-            // local storage implementation
+            // local storage implementation, COMMENT IF AZURE
             // let answerKeyId = path.basename(files[0].filename, '.pdf');
             // let answerKeyFileName = files[0].filename;
             // let attemptId = path.basename(files[1].filename, '.pdf');
