@@ -1,0 +1,6 @@
+﻿.logoGradient {
+  background-image: linear-gradient(to bottom right, #BAA678, #E7E0DE);
+  color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
