@@ -1,0 +1,8 @@
+﻿.tutorialBtnTxt {
+  color: #E7E0D037;
+  user-select: none;
+}
+
+.tutorialBtnTxt:hover {
+  color: #E7E0D0;
+}
