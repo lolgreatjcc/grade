@@ -29,3 +29,21 @@
   width: 30%;
   color: #1E1C1B40;
 }
+
+.gradeButton {
+  background-color: #2A1F13;
+
+}
+
+.gradeButton:hover {
+  background-color: #1C150D;
+}
+
+.gradeButtonText {
+
+  background-image: linear-gradient(to bottom right, #BAA678, #E7E0DE);
+  color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  user-select: none;
+}
