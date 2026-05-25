@@ -1,6 +1,12 @@
 ﻿const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+if (process.env.NODE_ENV === 'staging') {
+  require('dotenv').config({ path: `./.env_staging` });
+} else {
+  require('dotenv').config({ path: `./.env` });
+}
 const port = 3000
 
 var jsonParser = bodyParser.json();
