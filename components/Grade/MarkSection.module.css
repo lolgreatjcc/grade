@@ -1,13 +1,14 @@
 ﻿.markParent {
   display: flex;
-  min-width: 40vw;
+  align-items: flex-end;
+  min-width: 80vw;
   max-width: 80vw;
 }
 
 .markTriangle {
   position: relative;
   bottom: 10px;
-  height: 90px;
+  height: 60px;
   aspect-ratio: 1;
   clip-path: polygon(50% 75%, 100% 100%, 100% 50%);
   background: #E7E0D0;
