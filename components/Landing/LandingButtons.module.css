@@ -30,13 +30,24 @@
   color: #1E1C1B40;
 }
 
+.fileInput {
+  height: 100%;
+  width: 100%;
+  color: transparent;
+  position: absolute;
+}
+
+.fileInput:hover {
+  cursor: pointer;
+}
+
 .gradeButton {
   background-color: #2A1F13;
-
 }
 
 .gradeButton:hover {
   background-color: #1C150D;
+  cursor: pointer;
 }
 
 .gradeButtonText {
@@ -46,4 +57,12 @@
   background-clip: text;
   line-height: 1.2;
   user-select: none;
+}
+
+.overlayContainerFileSuccess {
+  box-shadow: 12px 12px 2px 1px rgba(18, 155, 34, 0.468);
+}
+
+.overlayContainerFileFail {
+  box-shadow: 12px 12px 2px 1px rgba(132, 11, 11, 0.624);
 }

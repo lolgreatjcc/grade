@@ -3,8 +3,30 @@ import AnswerSheetButton from "@/components/Landing/AnswerSheetButton";
 import GradeButton from "@/components/Landing/GradeButton";
 import Logo from "@/components/Logo";
 import styles from './index.module.css';
+import React, { useState } from "react";
 
 export default function Home() {
+
+  const [answerSheet, setAnswerSheet] = useState(null);
+  const [answerKey, setAnswerKey] = useState(null);
+
+  const handleFile = (event, setFileState) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileSize = file.size;
+      if (fileSize > 5242880) {
+        console.log("file too big")
+        return false;
+      } else {
+        setFileState(file);
+        return true;
+      }
+    } else {
+      return null;
+    }
+      
+  }
+
   return (
     <div className="min-h-screen">
       <div className="absolute left-10"><Logo /></div>
@@ -22,13 +44,13 @@ export default function Home() {
       >
         <div className="flex">
 
-          <AnswerSheetButton />
+          <AnswerSheetButton setAnswerSheet={setAnswerSheet} handleFile={handleFile}/>
 
-          <AnswerKeyButton />
+          <AnswerKeyButton setAnswerKey={setAnswerKey} handleFile={handleFile}/>
 
         </div>
 
-        <GradeButton />
+        <GradeButton answerSheet={answerSheet} answerKey={answerKey}/>
       </div>
 
 
