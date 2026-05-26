@@ -10,9 +10,6 @@ const username = process.env.DATABASE_USERNAME;
 const password = process.env.DATABASE_PASSWORD;
 const host = process.env.DATABASE_HOST;
 
-
-console.log(username);
-console.log(password);
 const sequelize = new Sequelize({
     dialect: 'postgres',
     define: {

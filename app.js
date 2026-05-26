@@ -1,16 +1,21 @@
 ﻿const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const dotenv = require('dotenv');
 if (process.env.NODE_ENV === 'staging') {
   require('dotenv').config({ path: `./.env_staging` });
 } else {
   require('dotenv').config({ path: `./.env` });
 }
+
 const port = 3001
 
-var jsonParser = bodyParser.json();
+const jsonParser = bodyParser.json();
 
+//app.options('*', cors());
+app.use(cors());
 app.use(jsonParser);
 
 //import controllers
