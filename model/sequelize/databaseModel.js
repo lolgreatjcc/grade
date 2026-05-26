@@ -10,22 +10,18 @@ const username = process.env.DATABASE_USERNAME;
 const password = process.env.DATABASE_PASSWORD;
 const host = process.env.DATABASE_HOST;
 
-
-console.log(username);
-console.log(password);
 const sequelize = new Sequelize({
     dialect: 'postgres',
     define: {
         timestamps: false,
         freezeTableName: true
     },
-    // comment dialectOptions for local db
-    // dialectOptions: {
-    //     ssl: {
-    //         require: true
-    //     }
-    // },
-    ssl: false, // comment this for azure
+    dialectOptions: process.env.NODE_ENV === 'staging' ? {
+        ssl: {
+            require: true
+        }
+    } : {},
+    ssl: process.env.NODE_ENV ==='staging' ? true : false,
     database: database,
     username: username,
     password: password,
