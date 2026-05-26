@@ -19,13 +19,12 @@ const sequelize = new Sequelize({
         timestamps: false,
         freezeTableName: true
     },
-    // comment dialectOptions for local db
-    // dialectOptions: {
-    //     ssl: {
-    //         require: true
-    //     }
-    // },
-    ssl: false, // comment this for azure
+    dialectOptions: process.env.NODE_ENV === 'staging' ? {
+        ssl: {
+            require: true
+        }
+    } : {},
+    ssl: process.env.NODE_ENV ==='staging' ? true : false,
     database: database,
     username: username,
     password: password,

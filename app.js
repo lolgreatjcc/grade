@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === 'staging') {
 } else {
   require('dotenv').config({ path: `./.env` });
 }
-const port = 3000
+const port = 3001
 
 var jsonParser = bodyParser.json();
 
