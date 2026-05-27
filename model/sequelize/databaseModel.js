@@ -31,12 +31,15 @@ const sequelize = new Sequelize({
 });
 
 // Checks Connection to Database
-(async () => {try {
-    await sequelize.authenticate();
-    console.log("Sequelize established connection with database successfully");
-} catch (error) {
-    console.error("Unable to connect to the database", error);
-}})();
+const checkDBConnection = (async () => {
+    try {
+        await sequelize.authenticate();
+        console.log("Sequelize established connection with database successfully");
+    } catch (error) {
+        console.error("Unable to connect to the database", error);
+}});
+if (process.env.DB_IGNORED != 'true') checkDBConnection();
+else console.log("db is being ignored");
 
 const User = sequelize.define('User', {
     user_id: {
@@ -133,11 +136,5 @@ User.hasMany(AnswerKey, { foreignKey: 'user_id' });
 
 Attempt.belongsTo(AnswerKey, { foreignKey: 'answer_key_id' });
 AnswerKey.hasOne(Attempt, { foreignKey: 'answer_key_id' });
-
-const sync = async () => {
-    await sequelize.sync();
-    console.log('All models were synchronized successfully.');
-}
-
 
 module.exports = sequelize;

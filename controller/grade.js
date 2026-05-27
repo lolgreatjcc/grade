@@ -6,6 +6,9 @@ const uuidv7 = uuid.v7;
 const answerKey = require('../model/answerKey');
 const attempt = require('../model/attempt')
 
+// utils
+const mcqMarker = require('../utils/mcqMarker');
+
 // Azure imports
 const { ShareServiceClient } = require('@azure/storage-file-share');
 const connectionString = process.env.AZURESTORAGECONNECTIONSTRING;
@@ -69,7 +72,8 @@ const azureFileUpload = async (serviceClient, shareName, directoryName, content,
 }
 
 const saveAnsFilesToDb = (answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res ) => {
-    const uploadedAnsKey = answerKey.createAnswerKey(answerKeyId, answerKeyFileName, userId, (err, result) => {
+    if (process.env.DB_IGNORED !== 'true') {
+        const uploadedAnsKey = answerKey.createAnswerKey(answerKeyId, answerKeyFileName, userId, (err, result) => {
         if (err) { // Answer key link save failed EC_45
             res.status(500).send({'message': "An error occured while processing a file. EC_45"});
             return;
@@ -85,11 +89,16 @@ const saveAnsFilesToDb = (answerKeyId, answerKeyFileName, attemptId, attemptFile
                     res.status(500).send({'message': "An error occured while processing a file. EC_46"});
                     return;
                 } else {
-                    res.status(201).send({'message' : "Grading attempt created.", 'attempt_id': attemptId});
+                    return;
                 }
             })
         }
-    });   
+        });   
+    } else {
+        console.log('db is ignored')
+        return;
+    }
+    
 }
 
 // --------------------------------------------------------
@@ -114,6 +123,8 @@ router.post('/grade', (req, res) => {
             let files = req.files;
             let azureLinks = []
             let numOfFiles = files.length;
+            const answerSheet = files[0];
+            const answerKey = files[1];
 
             // file checks
             if (numOfFiles !== 2) { // didn't receive both files (43)
@@ -146,6 +157,19 @@ router.post('/grade', (req, res) => {
                 let attemptId = path.basename(files[1].filename, '.pdf');
                 let attemptFileName = files[1].filename;
                 saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
+            }
+
+            // process answer sheet and answer key
+            try {
+                const markedImages = await mcqMarker(answerSheet, answerKey);
+                res.status(200).send({
+                    'message': 'marking successful', 
+                    'data': markedImages
+                });
+                return;
+            } catch(err) {
+                res.status(400).send({'message': 'An error occured while marking. EC_45'});
+                return;
             }
         }    
     }) 
