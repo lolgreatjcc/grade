@@ -1,5 +1,6 @@
 ﻿import { Ponomar } from "next/font/google"
 import styles from './LandingButtons.module.css';
+import { useRouter } from "next/router";
 import axios from "axios";
 
 const ponomar = Ponomar({
@@ -26,10 +27,11 @@ export default function GradeButton({ answerSheet, answerKey }) {
     })
   }
 
+  const router = useRouter();
+
   return (
     <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>
       <h2 className={`${ponomar.className} text-2xl ${styles.gradeButtonText}`}>grade</h2>
     </div>
   )
-
 }

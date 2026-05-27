@@ -1,0 +1,58 @@
+﻿.markParent {
+  display: flex;
+  align-items: flex-end;
+  min-width: 80vw;
+  max-width: 80vw;
+}
+
+.markTriangle {
+  position: relative;
+  bottom: 10px;
+  height: 60px;
+  aspect-ratio: 1;
+  clip-path: polygon(50% 75%, 100% 100%, 100% 50%);
+  background: #E7E0D0;
+}
+
+.markBody {
+  background-color: #E7E0D0;
+  border-radius: 4px;
+  padding: 12px;
+  flex-grow: 1;
+}
+
+.correctnessMessageCorrect {
+  color: #2F922A;
+
+}
+
+.correctnessMessageWrong {
+  color: #B81F1F;
+}
+
+.elaborationImage {
+  user-select: none;
+  border: 1px solid #85603C32;
+}
+
+.openIn {
+  font-size: 12px;
+  user-select: none;
+  color: #A36C3799;
+}
+
+.claude {
+  color: #A36C3799;
+}
+
+.chatgpt {
+  color: #A36C3799;
+}
+
+.claude:hover {
+  color: #D97757;
+}
+
+.chatgpt:hover {
+  color: #74AA9C;
+}
