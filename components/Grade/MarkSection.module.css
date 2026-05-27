@@ -1,8 +1,9 @@
 ﻿.markParent {
   display: flex;
+  position: relative;
+  right: 8vw;
   align-items: flex-end;
-  min-width: 80vw;
-  max-width: 80vw;
+  width: 100%
 }
 
 .markTriangle {

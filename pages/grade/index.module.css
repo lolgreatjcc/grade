@@ -1,0 +1,27 @@
+﻿.exitParent {
+  color: #E7E0D0CC;
+}
+
+.mainParent {
+  height: 100vh;
+}
+
+.score {
+  color: #E7E0D0CC;
+}
+
+.quizPage {
+}
+
+.quizNavigationBack {
+  color: #EFE7D9;
+}
+
+.quizNavText {
+  font-weight: bold;
+  color: #EFE7D9;
+}
+
+.quizNavigationForward {
+  color: #EFE7D9;
+}
