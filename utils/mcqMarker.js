@@ -33,7 +33,11 @@ const mcqMarker = async (answerSheet, answerKey) => {
     // const result = engine.process(ansSheetResult.pages, template);
 
     // temporary data to be returned for now
-    return ansSheetResult.pages;
+    let returnedResult = ansSheetResult.pages;
+    for (let i = 0; i < returnedResult.length; i++) {
+        delete returnedResult[i].data;
+    }
+    return returnedResult;
 
 }
 
