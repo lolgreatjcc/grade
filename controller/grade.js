@@ -1,7 +1,7 @@
 // imports
 const express = require('express');
 const router = express.Router();
-const uuid = require('uuid');
+const uuid = require('fix-esm').require("uuid");
 const uuidv7 = uuid.v7;
 const answerKey = require('../model/answerKey');
 const attempt = require('../model/attempt')
@@ -111,12 +111,14 @@ router.get('/grade', (req, res) => {
 // Client needs to set request enctype to "multipart/form-data"
 router.post('/grade', (req, res) => {
     // Size check handled by "upload" function
+    console.log(req.header);
 
     upload(req, res, async (err) => {
         // error handling from incoming files (41)
         if (err instanceof multer.MulterError) {
             res.status(400).send({'message':'One or more files ran into an issue. EC_41'});
         } else if (err) { // other errors (42)
+            console.log(err);
             res.status(400).send({'message':'An unexpected error occured. EC_42'});
         } else {
             // receive both files

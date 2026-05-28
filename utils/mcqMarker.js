@@ -2,6 +2,7 @@ const { OMRChecker } = require('@armghan3071/omrchecker');
 const engine = new OMRChecker();
 const { PDFParse } = require('pdf-parse');
 const { readFile } = require('node:fs/promises');
+const { writeFile } = require('node:fs/promises');
 
 const mcqMarker = async (answerSheet, answerKey) => {
     console.log(answerKey.filename);
@@ -23,6 +24,8 @@ const mcqMarker = async (answerSheet, answerKey) => {
     const ansSheetParser = new PDFParse({'data': ansSheetBuffer});
     const ansSheetResult = await ansSheetParser.getScreenshot({'scale': 1});
     await ansSheetParser.destroy();
+    
+    //await writeFile('test.png', ansSheetResult.pages[0].data);
 
     // pull answers from answerKey
     // const answers = engine.process(ansKeyResult.pages, template);
