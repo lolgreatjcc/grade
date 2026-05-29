@@ -1,13 +1,22 @@
-﻿import fs from "fs";
-import { openaiClient } from "./openaiClient";
+﻿const fs = require('fs');
+const openaiClient = require('./openaiClient');
 
-const openAIFileUpload = async (fileName) => {
-  const file = await openaiClient.files.create({
-    file: fs.createReadStream(`/mediaUploadTemp/${fileLoc}`),
+const openAIFileUpload = async (answerSheetFileName, answerKeyFileName) => {
+  const answerSheetFile = await openaiClient.files.create({
+    file: fs.createReadStream(`mediaUploadTemp/${answerSheetFileName}`),
     purpose: "user_data"
   })
 
-  return file;
+
+  const answerKeyFile = await openaiClient.files.create({
+    file: fs.createReadStream(`mediaUploadTemp/${answerKeyFileName}`),
+    purpose: "user_data"
+  })
+
+  return {
+    answerSheetFile,
+    answerKeyFile
+  }
 }
 
 module.exports = openAIFileUpload;
