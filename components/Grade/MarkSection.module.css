@@ -57,3 +57,14 @@
 .chatgpt:hover {
   color: #74AA9C;
 }
+
+.muted {
+  color: #BAA678;
+  font-size: 12px;
+}
+
+.qna {
+  color: #85603C;
+  font-size: 12px;
+  font-weight: bold;
+}

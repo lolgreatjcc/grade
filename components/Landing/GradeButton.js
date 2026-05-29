@@ -2,7 +2,7 @@
 import styles from './LandingButtons.module.css';
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { useLocalStorage } from "usehooks-ts";
 
 const ponomar = Ponomar({
   subsets: ['latin'],
@@ -10,6 +10,9 @@ const ponomar = Ponomar({
 })
 
 export default function GradeButton({ answerSheet, answerKey }) {
+  const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
+  const router = useRouter();
+
   async function grade(event) {
     event.preventDefault()
     if (answerSheet == null || answerKey == null) {
@@ -22,15 +25,17 @@ export default function GradeButton({ answerSheet, answerKey }) {
     const response = await axios.post('http://localhost:3001/grade', formData, {
       'headers': { 'Content-Type': 'multipart/form-data' }
     }).then((result) => {
-      console.log(result);
+      saveMarkedData(JSON.parse(result.data.data));
+      router.push('/grade');
+
+
     }).catch((err) => {
       console.log(err.response.data.message)
     })
   }
 
-  const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
 
-  const router = useRouter();
+
 
   return (
     <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>
