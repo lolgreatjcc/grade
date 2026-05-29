@@ -33,8 +33,8 @@ const mcqMarker = async (answerSheet, answerKey) => {
     // console.log(answers);
 
 
-    // Needs more testing, tried a few times can't find my answers.
-    // const ansKeyImgArr = ansKeyResult.pages;
+    // Needs more testing, tried a few times but OCRcan't find my answers.
+    const ansKeyImgArr = ansKeyResult.pages;
     // for (let i = 0; i < ansKeyImgArr.length; i++) {
     //     delete ansKeyImgArr[i].data;
     //     const worker = await createWorker('eng');
