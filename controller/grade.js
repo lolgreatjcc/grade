@@ -6,8 +6,12 @@ const uuidv7 = uuid.v7;
 const answerKey = require('../model/answerKey');
 const attempt = require('../model/attempt')
 
+const {openaiClient} = require('./openAI/openaiClient');
+
 // utils
 const mcqMarker = require('../utils/mcqMarker');
+const splitQuestions = require('./gradeUtils/splitQuestions');
+
 
 // Azure imports
 const { ShareServiceClient } = require('@azure/storage-file-share');
@@ -164,12 +168,16 @@ router.post('/grade', (req, res) => {
             // process answer sheet and answer key
             try {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
+                
+                const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
+                
                 res.status(200).send({
                     'message': 'marking successful', 
-                    'data': markedImages
+                    'data': response.output_text
                 });
                 return;
             } catch(err) {
+              console.log(err);
                 res.status(400).send({'message': 'An error occured while marking. EC_45'});
                 return;
             }
