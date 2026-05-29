@@ -1,7 +1,7 @@
 ﻿.markParent {
   display: flex;
   position: relative;
-  right: 8vw;
+  /* right: 8vw; */
   align-items: flex-end;
   width: 100%
 }

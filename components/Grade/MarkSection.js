@@ -26,7 +26,7 @@ export default function MarkSection(props) {
   return (
     <AnimatePresence>
       <motion.div layout className={`${styles.markParent} m-1`}>
-        <motion.div layout className={`${styles.markTriangle}`} />
+        {/* <motion.div layout className={`${styles.markTriangle}`} /> */}
         <motion.div layout className={`${styles.markBody}`}>
 
           <motion.div layout className='flex'>

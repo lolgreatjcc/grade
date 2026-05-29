@@ -2,6 +2,7 @@
 import styles from './LandingButtons.module.css';
 import { useRouter } from "next/router";
 import axios from "axios";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 const ponomar = Ponomar({
   subsets: ['latin'],
@@ -21,11 +22,13 @@ export default function GradeButton({ answerSheet, answerKey }) {
     const response = await axios.post('http://localhost:3001/grade', formData, {
       'headers': { 'Content-Type': 'multipart/form-data' }
     }).then((result) => {
-      //planned redirect here
+      console.log(result);
     }).catch((err) => {
       console.log(err.response.data.message)
     })
   }
+
+  const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
 
   const router = useRouter();
 
