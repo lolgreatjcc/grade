@@ -1,5 +1,10 @@
 ﻿.exitParent {
   color: #E7E0D0CC;
+  user-select: none;
+}
+
+.exitParent:hover {
+  color: #E7E0D0;
 }
 
 .mainParent {
@@ -14,6 +19,10 @@
 }
 
 .quizNavigationBack {
+  color: #EFE7D980;
+}
+
+.quizNavigationBack:hover {
   color: #EFE7D9;
 }
 
@@ -23,5 +32,9 @@
 }
 
 .quizNavigationForward {
+  color: #EFE7D980;
+}
+
+.quizNavigationForward:hover {
   color: #EFE7D9;
 }

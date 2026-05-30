@@ -14,7 +14,7 @@ const collapseTransition = {
 
 export default function MarkSection(props) {
 
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   // props
   const correctness = props.correctness == null ? false : props.correctness;
@@ -26,11 +26,23 @@ export default function MarkSection(props) {
   return (
     <AnimatePresence>
       <motion.div layout className={`${styles.markParent} m-1`}>
-        <motion.div layout className={`${styles.markTriangle}`} />
+        {/* <motion.div layout className={`${styles.markTriangle}`} /> */}
         <motion.div layout className={`${styles.markBody}`}>
 
           <motion.div layout className='flex'>
-            <div className='flex-grow-1'>
+
+            <motion.div layout className='flex-grow-1'>
+              <motion.div layout className='flex justify-between'>
+                <h1 className={styles.muted}>Question {props.questionNumber}</h1>
+                <div className='flex'>
+                  <h1 className={styles.muted}>Your Answer: </h1>
+                  <h1 className={styles.qna}> {props.userAnswer}</h1>
+                  <h1 className={styles.muted}>| Correct Answer: </h1>
+                  <h1 className={styles.qna}> {props.correctAnswer}</h1>
+                  {/* <h1 className='styles'>|</h1>
+                  <h1 className={styles.muted}>Correct Answer: { }</h1> */}
+                </div>
+              </motion.div>
               {correctness ?
                 <h1 className={`${styles.correctnessMessageCorrect} mb-2`}>{correctnessMessage}</h1>
                 :
@@ -41,7 +53,7 @@ export default function MarkSection(props) {
                 <motion.h1 key={isCollapsed} transition={collapseTransition} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{elaborationText}</motion.h1>
               }
 
-            </div>
+            </motion.div>
             <motion.div layout className='ps-4' onClick={() => setIsCollapsed(!isCollapsed)}>
               <motion.svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><motion.path layout d="m280-400 200-200 200 200H280Z" /></motion.svg>
             </motion.div>
@@ -49,10 +61,10 @@ export default function MarkSection(props) {
 
 
           {isCollapsed ? null :
-            <motion.div className='flex justify-between mt-3' key={isCollapsed} transition={collapseTransition} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <div>
+            <motion.div className='flex justify-end mt-3' key={isCollapsed} transition={collapseTransition} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              {/* <div>
                 <Image className={styles.elaborationImage} src={elaborationImage} alt='missing' width={200} height={100} />
-              </div>
+              </div> */}
 
               <div className='flex items-end'>
                 <h1 className={`me-1 ${styles.openIn}`}>Open in</h1>
