@@ -25,6 +25,7 @@ export default function Home() {
         return true;
       }
     } else {
+      setPreviewImage(null);
       return null;
     }
       
