@@ -35,6 +35,8 @@ export default function GradeButton({ answerSheet, answerKey }) {
 
     }).catch((err) => {
       console.log(err.response.data.message)
+    }).finally(() => {
+      setLoading(false);
     })
   }
 
