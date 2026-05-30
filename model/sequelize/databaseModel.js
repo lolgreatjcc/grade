@@ -58,7 +58,7 @@ const User = sequelize.define('User', {
     },
     user_password: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     },
     user_creation_date: {
         type: DataTypes.DATE,
