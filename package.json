@@ -12,7 +12,11 @@
     "axios": "^1.16.1",
     "motion": "^12.40.0",
     "next": "16.2.6",
+<<<<<<< HEAD
     "pdftoimg-js": "^0.2.5",
+=======
+    "next-auth": "^4.24.14",
+>>>>>>> fe-main
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "usehooks-ts": "^3.1.1"

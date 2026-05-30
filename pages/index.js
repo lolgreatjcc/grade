@@ -2,9 +2,11 @@ import AnswerKeyButton from "@/components/Landing/AnswerKeyButton";
 import AnswerSheetButton from "@/components/Landing/AnswerSheetButton";
 import GradeButton from "@/components/Landing/GradeButton";
 import Logo from "@/components/Logo";
+import Menu from "@/components/Menu/Menu";
 import styles from './index.module.css';
 import React, { useState } from "react";
 import { pdfToImg } from "pdftoimg-js/browser";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
 
@@ -31,14 +33,15 @@ export default function Home() {
       
   }
 
+  const session = useSession().data;
+  console.log(session);
+
   return (
     <div className="min-h-screen">
       <div className="absolute left-10"><Logo /></div>
       <div className="absolute right-5 top-5">
 
-        <svg className={`${styles.menuBtn}`} xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px">
-          <path fill="currentColor" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
-        </svg>
+        <Menu />
       </div>
       <div className="absolute bottom-10 right-10">
         <h2 className={`${styles.tutorialBtnTxt} text-2xl`}>Need a tutorial?</h2>
