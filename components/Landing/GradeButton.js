@@ -2,6 +2,7 @@
 import styles from './LandingButtons.module.css';
 import { useRouter } from "next/router";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -14,6 +15,7 @@ const ponomar = Ponomar({
 export default function GradeButton({ answerSheet, answerKey }) {
   const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
   const [loading, setLoading] = useState(false);
+  const session = useSession().data;
   const router = useRouter();
 
   async function grade(event) {
@@ -23,25 +25,22 @@ export default function GradeButton({ answerSheet, answerKey }) {
     }
     setLoading(true);
     const formData = new FormData();
-    formData.append('files', answerSheet);
-    formData.append('files', answerKey)
-    console.log(formData);
-    const response = await axios.post('http://localhost:3001/grade', formData, {
-      'headers': { 'Content-Type': 'multipart/form-data' }
+    formData.append('user_id', session ? session.user.user_id : undefined)
+      formData.append('files', answerSheet);
+      formData.append('files', answerKey);
+      const response = await axios.post('http://localhost:3001/grade', formData, {
+        'headers': session ? { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${session.user.token}` }
+                  : { 'Content-Type': 'multipart/form-data'}
     }).then((result) => {
       saveMarkedData(JSON.parse(result.data.data));
       router.push('/grade');
 
-
     }).catch((err) => {
-      console.log(err.response.data.message)
+      console.log(err)
     }).finally(() => {
       setLoading(false);
     })
   }
-
-
-
 
   return (
     <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>

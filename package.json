@@ -12,6 +12,7 @@
     "axios": "^1.16.1",
     "motion": "^12.40.0",
     "next": "16.2.6",
+    "next-auth": "^4.24.14",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "usehooks-ts": "^3.1.1"

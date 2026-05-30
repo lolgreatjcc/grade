@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { Reddit_Mono } from "next/font/google";
+import { Providers } from "@/components/provider";
 
 const redditMono = Reddit_Mono({
   subsets: ['latin']
@@ -7,8 +8,11 @@ const redditMono = Reddit_Mono({
 
 export default function App({ Component, pageProps }) {
   return (
-    <main className={redditMono.className}>
-      <Component {...pageProps} />
-    </main>
+    <Providers>
+      <main className={redditMono.className}>
+        <Component {...pageProps} />
+      </main>
+    </Providers>
+    
   );
 }
