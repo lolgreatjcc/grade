@@ -32,13 +32,13 @@ const mcqMarker = async (answerSheet, answerKey) => {
     // const answers = engine.process(ansKeyResult.pages, template);
     // console.log(answers);
     const ansKeyImgArr = ansKeyResult.pages;
-    for (let i = 0; i < ansKeyImgArr.length; i++) {
-        delete ansKeyImgArr[i].data;
-        const worker = await createWorker('eng');
-        const ansKeyOCRRes = await worker.recognize(ansKeyImgArr[i].dataUrl);
-        ansKeyImgArr[i].ocrText = ansKeyOCRRes.data.text;
-        await worker.terminate();
-    }
+    // for (let i = 0; i < ansKeyImgArr.length; i++) {
+    //     delete ansKeyImgArr[i].data;
+    //     const worker = await createWorker('eng');
+    //     const ansKeyOCRRes = await worker.recognize(ansKeyImgArr[i].dataUrl);
+    //     ansKeyImgArr[i].ocrText = ansKeyOCRRes.data.text;
+    //     await worker.terminate();
+    // }
 
     
 
@@ -57,7 +57,12 @@ const mcqMarker = async (answerSheet, answerKey) => {
         ansSheetImgArr[i].ocrText = ansSheetOCRRes.data.text;
         await worker.terminate();
     }
-    return {'answerSheet': ansSheetImgArr, 'answerKey': ansKeyImgArr};
+    return {
+        'answerSheet': ansSheetImgArr, 
+        'answerSheetFilename': answerSheet.filename,
+        'answerKey': ansKeyImgArr,
+        'answerKeyFilename': answerKey.filename
+    };
 
 }
 

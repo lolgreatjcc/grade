@@ -169,7 +169,6 @@ router.post('/grade',(req, res) => {
             // process answer sheet and answer key
             try {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
-                
                 const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
                 
                 res.status(200).send({
