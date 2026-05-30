@@ -36,7 +36,7 @@ export default function GradeButton({ answerSheet, answerKey }) {
       router.push('/grade');
 
     }).catch((err) => {
-      console.log(err.response.data.message)
+      console.log(err)
     }).finally(() => {
       setLoading(false);
     })
