@@ -5,6 +5,7 @@ import Logo from "@/components/Logo";
 import Menu from "@/components/Menu/Menu";
 import styles from './index.module.css';
 import React, { useState } from "react";
+import { pdfToImg } from "pdftoimg-js/browser";
 import { useSession } from "next-auth/react";
 
 export default function Home() {
@@ -12,7 +13,7 @@ export default function Home() {
   const [answerSheet, setAnswerSheet] = useState(null);
   const [answerKey, setAnswerKey] = useState(null);
 
-  const handleFile = (event, setFileState) => {
+  const handleFile = async (event, setFileState, setPreviewImage) => {
     const file = event.target.files[0];
     if (file) {
       const fileSize = file.size;
@@ -20,10 +21,13 @@ export default function Home() {
         console.log("file too big")
         return false;
       } else {
+        const previewImage = await pdfToImg(URL.createObjectURL(file), {'pages': 'firstPage'});
+        setPreviewImage(previewImage);
         setFileState(file);
         return true;
       }
     } else {
+      setPreviewImage(null);
       return null;
     }
       
