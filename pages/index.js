@@ -4,13 +4,14 @@ import GradeButton from "@/components/Landing/GradeButton";
 import Logo from "@/components/Logo";
 import styles from './index.module.css';
 import React, { useState } from "react";
+import { pdfToImg } from "pdftoimg-js/browser";
 
 export default function Home() {
 
   const [answerSheet, setAnswerSheet] = useState(null);
   const [answerKey, setAnswerKey] = useState(null);
 
-  const handleFile = (event, setFileState) => {
+  const handleFile = async (event, setFileState, setPreviewImage) => {
     const file = event.target.files[0];
     if (file) {
       const fileSize = file.size;
@@ -18,6 +19,8 @@ export default function Home() {
         console.log("file too big")
         return false;
       } else {
+        const previewImage = await pdfToImg(URL.createObjectURL(file), {'pages': 'firstPage'});
+        setPreviewImage(previewImage);
         setFileState(file);
         return true;
       }
