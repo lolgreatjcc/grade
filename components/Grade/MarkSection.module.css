@@ -1,7 +1,7 @@
 ﻿.markParent {
   display: flex;
   position: relative;
-  right: 8vw;
+  /* right: 8vw; */
   align-items: flex-end;
   width: 100%
 }
@@ -56,4 +56,15 @@
 
 .chatgpt:hover {
   color: #74AA9C;
+}
+
+.muted {
+  color: #BAA678;
+  font-size: 12px;
+}
+
+.qna {
+  color: #85603C;
+  font-size: 12px;
+  font-weight: bold;
 }
