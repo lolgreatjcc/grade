@@ -66,3 +66,10 @@
 .overlayContainerFileFail {
   box-shadow: 12px 12px 2px 1px rgba(132, 11, 11, 0.624);
 }
+
+.loadingParent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #BAA678;
+}
