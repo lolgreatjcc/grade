@@ -39,7 +39,8 @@ export const authOptions = {
             'type': 'google'
           }
         }).then((response) => {
-          session.user.id = response.data.id;
+          session.user.user_id = response.data.user_id;
+          session.user.token = response.data.token;
         }).catch((err) => {
           console.log(err);
         })

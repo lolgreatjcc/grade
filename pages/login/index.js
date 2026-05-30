@@ -1,20 +1,14 @@
 import Logo from "@/components/Logo";
 import styles from './index.module.css';
 import React, { useState } from "react";
-import Menu from "@/components/Global/Menu";
+import Menu from "@/components/Menu/Menu";
 import { useSession } from "next-auth/react";
-import { handleSignIn, handleSignOut } from "@/utils/googleAuth";
+import SignInWithGoogle from "@/components/Auth/SignInWithGoogle";
 
 export default function Home() {
     const session = useSession().data;
     console.log(session);
-//   const onSignIn = (googleUser) => {
-//   var profile = googleUser.getBasicProfile();
-//   console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-//   console.log('Name: ' + profile.getName());
-//   console.log('Image URL: ' + profile.getImageUrl());
-//   console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-//}
+
 
   return (
     <div className="min-h-screen">
@@ -25,9 +19,36 @@ export default function Home() {
         </div>
         <div
             className={`min-h-screen flex items-center justify-center flex-col`}>
-        <div className="flex">
-            <main className="flex items-center justify-center min-h-screen">
-                {session ? (
+        <div>
+            <div className={`${styles.signInContainer}`}>
+                <h1 className="text-xl text-center">Welcome Back</h1>
+                <div>
+                    <div>
+                        <div className="flex justify-center my-2">
+                            <input placeholder="Email" className={`${styles.inputField}`}/>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex justify-center my-2">
+                            <input placeholder="Password" className={`${styles.inputField}`}/>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex justify-center pt-5">
+                            <button className={`${styles.logInButton}`}>Sign In</button>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div className="my-4">
+                    <h1 className="text-center">Or</h1>
+                </div>
+                <div className="flex justify-center">
+                    <SignInWithGoogle />
+                </div>
+                
+                
+                {/* {session ? (
                     <div>
                         <div>
                             <h1 className="text-center text-2xl py-5">Want to change accounts, {session.user.name}?</h1>
@@ -40,12 +61,12 @@ export default function Home() {
                     </div>
                 ) : (
                     <div className="items-center">
-                        <h1 className="text-center text-2xl py-5">Welcome back</h1>
+                        
                         <button onClick={handleSignIn} className={`${styles.signInButton}`}>Sign in with Google</button>
                     </div>
                     
-                )}
-            </main>
+                )} */}
+            </div>
         </div>
       </div>
     </div>

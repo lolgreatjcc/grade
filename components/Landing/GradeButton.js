@@ -23,16 +23,18 @@ export default function GradeButton({ answerSheet, answerKey }) {
       }
       setRequestInProgress(true);
       const formData = new FormData();
-      formData.append('user_id', session.user.id)
+      formData.append('user_id', session ? session.user.user_id : undefined)
       formData.append('files', answerSheet);
       formData.append('files', answerKey);
       const response = await axios.post('http://localhost:3001/grade', formData, {
-        'headers': { 'Content-Type': 'multipart/form-data' }
+        'headers': session ? { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${session.user.token}` }
+                  : { 'Content-Type': 'multipart/form-data'}
       }).then((result) => {
-        console.log(session)
+        console.log("Redirecting");
         router.push('/grade');
       }).catch((err) => {
-        console.log(err.response.data.message)
+        console.log(err);
+        //console.log(err.data.message)
         setRequestInProgress(false)
       })
     } else {

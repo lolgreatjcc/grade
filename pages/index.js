@@ -2,9 +2,10 @@ import AnswerKeyButton from "@/components/Landing/AnswerKeyButton";
 import AnswerSheetButton from "@/components/Landing/AnswerSheetButton";
 import GradeButton from "@/components/Landing/GradeButton";
 import Logo from "@/components/Logo";
-import Menu from "@/components/Global/Menu";
+import Menu from "@/components/Menu/Menu";
 import styles from './index.module.css';
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
 
@@ -27,6 +28,9 @@ export default function Home() {
     }
       
   }
+
+  const session = useSession().data;
+  console.log(session);
 
   return (
     <div className="min-h-screen">

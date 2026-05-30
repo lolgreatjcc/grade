@@ -1,5 +1,13 @@
-﻿.signInButton {
-  padding: 15px 60px 15px 60px;
+﻿.signInContainer {
+  border-width: 1px;
+  border-color: #D9D9D9;
+  border-radius: 15px;
+  padding: 30px;
+}
+
+.logInButton {
+  width: 100%;
+  padding: 15px 0px 15px 0px;
   border-radius: 15px;
   background-color: transparent;
   color: white;
@@ -8,8 +16,16 @@
   align-self: center;
 }
 
-.signInButton:hover {
+.logInButton:hover {
   cursor: pointer;
   transition: 0.3s;
   background-color: rgba(0,0,0,0.3);
+}
+
+.inputField {
+  border-bottom: 1px solid #D9D9D9;
+  padding: 5px;
+  margin: 5px 0px 5px 0px;
+  outline: none;
+  width:100%
 }
