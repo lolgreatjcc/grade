@@ -31,9 +31,6 @@ const mcqMarker = async (answerSheet, answerKey) => {
     // pull answers from answerKey
     // const answers = engine.process(ansKeyResult.pages, template);
     // console.log(answers);
-
-
-    // Needs more testing, tried a few times but OCRcan't find my answers.
     const ansKeyImgArr = ansKeyResult.pages;
     // for (let i = 0; i < ansKeyImgArr.length; i++) {
     //     delete ansKeyImgArr[i].data;
@@ -61,10 +58,10 @@ const mcqMarker = async (answerSheet, answerKey) => {
         await worker.terminate();
     }
     return {
-      'answerSheet': ansSheetImgArr, 
-      'answerSheetFilename': answerSheet.filename,
-      'answerKey': ansKeyImgArr,
-      'answerKeyFilename': answerKey.filename
+        'answerSheet': ansSheetImgArr, 
+        'answerSheetFilename': answerSheet.filename,
+        'answerKey': ansKeyImgArr,
+        'answerKeyFilename': answerKey.filename
     };
 
 }

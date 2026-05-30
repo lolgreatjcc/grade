@@ -1,6 +1,7 @@
 // imports
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const uuid = require('fix-esm').require("uuid");
 const uuidv7 = uuid.v7;
 const answerKey = require('../model/answerKey');
@@ -10,6 +11,7 @@ const {openaiClient} = require('./openAI/openaiClient');
 
 // utils
 const mcqMarker = require('../utils/mcqMarker');
+const verifyBodyUserId = require('../utils/verify');
 const splitQuestions = require('./gradeUtils/splitQuestions');
 
 
@@ -54,7 +56,6 @@ const upload = multer({
 const checkExtension = (files, acceptedExt) => {
     let valid = true;
     for (let i = 0; i < files.length; i++) {
-        console.log(path.extname(files[i].originalname));
         if (acceptedExt.includes(path.extname(files[i].originalname)) == false) {
             valid = false;
             break;
@@ -84,7 +85,6 @@ const saveAnsFilesToDb = (answerKeyId, answerKeyFileName, attemptId, attemptFile
         } else {
             attempt.createAttempt(attemptId, attemptFileName, userId, answerKeyId, (err, result) => {
                 if (err) { // Attempt sheet link save failed EC_46
-                    //console.log(err);
                     answerKey.deleteAnswerKey(answerKeyId, (err, result) => {
                         if (err) {
                             console.log({'message': 'failed to cleanup answer key after failed attempt insertion. EC_46a'})
@@ -113,16 +113,13 @@ router.get('/grade', (req, res) => {
 
 
 // Client needs to set request enctype to "multipart/form-data"
-router.post('/grade', (req, res) => {
+router.post('/grade',(req, res) => {
     // Size check handled by "upload" function
-    console.log(req.header);
-
     upload(req, res, async (err) => {
         // error handling from incoming files (41)
         if (err instanceof multer.MulterError) {
             res.status(400).send({'message':'One or more files ran into an issue. EC_41'});
         } else if (err) { // other errors (42)
-            console.log(err);
             res.status(400).send({'message':'An unexpected error occured. EC_42'});
         } else {
             // receive both files
@@ -141,8 +138,12 @@ router.post('/grade', (req, res) => {
                 return;
             }
 
+            if (req.body.user_id !== "undefined" & req.body.user_id !== null) {
+                verifyBodyUserId(req, res);
+            };            
+           
             // file upload to azure (if applicable) and save to db
-            let userId = '019e555d-94ed-7336-ba9f-2b0622f5370f'; //dummy value for now
+            let userId = (req.body.user_id === null || req.body.user_id === "undefined") ? '019e555d-94ed-7336-ba9f-2b0622f5370f' : req.body.user_id; //dummy value for now
             if (process.env.NODE_ENV === 'staging') {
                 // Creating uuid names for azure
                 let answerKeyId = uuidv7();
@@ -168,7 +169,6 @@ router.post('/grade', (req, res) => {
             // process answer sheet and answer key
             try {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
-                
                 const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
                 
                 res.status(200).send({
