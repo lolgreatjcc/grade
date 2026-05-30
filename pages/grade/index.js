@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 export default function Grade() {
 
   const [markedData, setMarkedData] = useLocalStorage("grade-markedData");
+  const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet");
   const [currentPage, setCurrentPage] = useState(1);
   const [minPage, setMinPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
@@ -112,9 +113,7 @@ export default function Grade() {
       </div>
 
       <div className={`${styles.mainParent} grid grid-cols-12 p-15  `}>
-
-
-        <Image className={`${styles.quizPage} col-span-5`} src={exampleQuizPage} alt="quiz" />
+          <Image className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage-1]?.dataUrl} width={500} height={1000} alt="quiz" /> 
         <div layout className="col-span-7 flex flex-col justify-between">
           <div>
             <LayoutGroup className="flex-grow-1">

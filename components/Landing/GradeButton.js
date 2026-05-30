@@ -14,6 +14,7 @@ const ponomar = Ponomar({
 
 export default function GradeButton({ answerSheet, answerKey }) {
   const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
+  const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet", null);
   const [loading, setLoading] = useState(false);
   const session = useSession().data;
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function GradeButton({ answerSheet, answerKey }) {
                   : { 'Content-Type': 'multipart/form-data'}
     }).then((result) => {
       saveMarkedData(JSON.parse(result.data.data));
+      saveAnswerSheetImageArr(result.data.answer_sheet);
       router.push('/grade');
 
     }).catch((err) => {
