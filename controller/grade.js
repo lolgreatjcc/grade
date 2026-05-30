@@ -173,7 +173,8 @@ router.post('/grade',(req, res) => {
                 
                 res.status(200).send({
                     'message': 'marking successful', 
-                    'data': response.output_text
+                    'data': response.output_text,
+                    'answer_sheet': markedImages.answerSheet
                 });
                 return;
             } catch(err) {

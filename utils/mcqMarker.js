@@ -32,13 +32,13 @@ const mcqMarker = async (answerSheet, answerKey) => {
     // const answers = engine.process(ansKeyResult.pages, template);
     // console.log(answers);
     const ansKeyImgArr = ansKeyResult.pages;
-    // for (let i = 0; i < ansKeyImgArr.length; i++) {
-    //     delete ansKeyImgArr[i].data;
+    for (let i = 0; i < ansKeyImgArr.length; i++) {
+        delete ansKeyImgArr[i].data;
     //     const worker = await createWorker('eng');
     //     const ansKeyOCRRes = await worker.recognize(ansKeyImgArr[i].dataUrl);
     //     ansKeyImgArr[i].ocrText = ansKeyOCRRes.data.text;
     //     await worker.terminate();
-    // }
+    }
 
     
 
@@ -52,10 +52,10 @@ const mcqMarker = async (answerSheet, answerKey) => {
     const ansSheetImgArr = ansSheetResult.pages;
     for (let i = 0; i < ansSheetImgArr.length; i++) {
         delete ansSheetImgArr[i].data;
-        const worker = await createWorker('eng');
-        const ansSheetOCRRes = await worker.recognize(ansSheetImgArr[i].dataUrl);
-        ansSheetImgArr[i].ocrText = ansSheetOCRRes.data.text;
-        await worker.terminate();
+        //const worker = await createWorker('eng');
+        //const ansSheetOCRRes = await worker.recognize(ansSheetImgArr[i].dataUrl);
+        //ansSheetImgArr[i].ocrText = ansSheetOCRRes.data.text;
+        //await worker.terminate();
     }
     return {
         'answerSheet': ansSheetImgArr, 
