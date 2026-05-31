@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useLocalStorage } from "usehooks-ts";
 import { useState } from "react";
 import { motion } from "motion/react";
-
+import config from "@/config";
 const ponomar = Ponomar({
   subsets: ['latin'],
   weight: '400'
@@ -24,12 +24,13 @@ export default function GradeButton({ answerSheet, answerKey }) {
     if (answerSheet == null || answerKey == null || loading) {
       return;
     }
+
     setLoading(true);
     const formData = new FormData();
     formData.append('user_id', session ? session.user.user_id : undefined)
       formData.append('files', answerSheet);
       formData.append('files', answerKey);
-      const response = await axios.post('http://localhost:3001/grade', formData, {
+      const response = await axios.post(`${config.backendBaseUrl}/grade`, formData, {
         'headers': session ? { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${session.user.token}` }
                   : { 'Content-Type': 'multipart/form-data'}
     }).then((result) => {

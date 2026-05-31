@@ -42,9 +42,11 @@ export default function Menu() {
                 <div className={`${styles.menuItem} m-3`}><h1 className={`${styles.menuItemText}`}>Generate Answer Sheet</h1></div>
             </div> 
             :
-            <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" onClick={handleMenuButton}>
-                <path fill="currentColor" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
-            </svg>
+            <div className={`${styles.iconContainer}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" onClick={handleMenuButton}>
+                    <path fill="currentColor" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
+                </svg>
+            </div>
             }
             
         </div>

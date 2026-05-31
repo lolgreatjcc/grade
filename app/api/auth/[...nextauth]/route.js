@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import axios from 'axios';
+import config from '@/config';
 
 export const authOptions = {
   providers: [
@@ -29,7 +30,7 @@ export const authOptions = {
         const googleId = token.googleId;
         await axios({
           'method': 'POST',
-          'url': 'http://localhost:3001/auth',
+          'url': `${config.backendBaseUrl}/auth`,
           'headers': {},
           'data': {
             'googleId': googleId,
