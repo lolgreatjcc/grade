@@ -2,6 +2,9 @@
     display: flex;
     justify-content: end;
 }
+.iconContainer:hover {
+    cursor: pointer;
+}
 .menuItem {
     display: flex;
     justify-content: end;
