@@ -6,8 +6,8 @@ import config from '@/config';
 export const authOptions = {
   providers: [
     GoogleProvider({
-      clientId: "319469874716-42t2382gsipmf5f0otmr8ccbf1erp9rh.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientId: config.OAuthClientId,
+      clientSecret: config.OAuthClientSecret,
       authorization: {
         params: {
           prompt: "consent",
@@ -17,7 +17,7 @@ export const authOptions = {
       }
     }),
   ],
-  secret: "WABBAJghkM+v76ayI50C956LKak3vOkPDbxP4r3FTgo=",
+  secret: config.secret,
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account && profile) {
