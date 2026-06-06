@@ -1,13 +1,17 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import axios from 'axios';
-import config from '@/config';
+import { loadEnvConfig } from '@next/env';
+export const dynamic = "force-dynamic";
+ 
+const projectDir = process.cwd();
+loadEnvConfig(projectDir);
 
 export const authOptions = {
   providers: [
     GoogleProvider({
-      clientId: config.OAuthClientId,
-      clientSecret: config.OAuthClientSecret,
+      clientId: process.env.NEXT_PUBLIC_OAUTHCLIENTID,
+      clientSecret: process.env.NEXT_PUBLIC_OAUTHCLIENTSECRET,
       authorization: {
         params: {
           prompt: "consent",
@@ -17,7 +21,7 @@ export const authOptions = {
       }
     }),
   ],
-  secret: config.secret,
+  secret: process.env.NEXT_PUBLIC_SECRET,
   callbacks: {
     async jwt({ token, account, profile }) {
       if (account && profile) {
@@ -30,7 +34,7 @@ export const authOptions = {
         const googleId = token.googleId;
         await axios({
           'method': 'POST',
-          'url': `${config.backendBaseUrl}/auth`,
+          'url': `${proccess.env.NEXT_PUBLIC_BACKEND_URL}/auth`,
           'headers': {},
           'data': {
             'googleId': googleId,
