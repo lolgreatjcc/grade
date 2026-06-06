@@ -10,7 +10,7 @@ const nextConfig = {
     NEXT_PUBLIC_OAUTHCLIENTID: process.env.NEXT_PUBLIC_OAUTHCLIENTID,
     NEXT_PUBLIC_SECRET: process.env.NEXT_PUBLIC_SECRET,
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL
-  }
+  },
 };
 
 export default nextConfig;
