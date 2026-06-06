@@ -4,8 +4,9 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useLocalStorage } from "usehooks-ts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { useAnswerSheet } from "@/stores/useAnswerSheet";
 
 const ponomar = Ponomar({
   subsets: ['latin'],
@@ -14,9 +15,10 @@ const ponomar = Ponomar({
 
 export default function GradeButton({ answerSheet, answerKey }) {
   const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
-  const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet", null);
+  //const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet", null);
   const [loading, setLoading] = useState(false);
   const session = useSession().data;
+  const { answerSheetImageArr, updateAnswerSheetImageArr } = useAnswerSheet();
   const router = useRouter();
 
   async function grade(event) {
@@ -35,8 +37,9 @@ export default function GradeButton({ answerSheet, answerKey }) {
                   : { 'Content-Type': 'multipart/form-data'}
     }).then((result) => {
       saveMarkedData(JSON.parse(result.data.data));
-      saveAnswerSheetImageArr(result.data.answer_sheet);
-      router.push('/grade');
+      //saveAnswerSheetImageArr(result.data.answer_sheet);
+      updateAnswerSheetImageArr(result.data.answer_sheet)
+      //router.push('/grade');
 
     }).catch((err) => {
       console.log(err)
@@ -44,6 +47,12 @@ export default function GradeButton({ answerSheet, answerKey }) {
       setLoading(false);
     })
   }
+
+  useEffect(() => {
+    if (answerSheetImageArr != null && markedData != null) {
+      router.push('/grade');
+    }
+  }, [answerSheetImageArr, markedData])
 
   return (
     <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>
