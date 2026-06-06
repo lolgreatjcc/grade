@@ -6,7 +6,6 @@ const { writeFile } = require('node:fs/promises');
 const { createWorker } = require('tesseract.js');
 
 const mcqMarker = async (answerSheet, answerKey) => {
-    console.log(answerKey.filename);
     // settings for OMR
     const template = {};
 

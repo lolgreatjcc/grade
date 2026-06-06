@@ -23,6 +23,7 @@ const shareServiceClient = connectionString ? ShareServiceClient.fromConnectionS
 // File handling
 const path = require('path');
 const multer = require('multer');
+const splitQuestionsBuffer = require('./gradeUtils/splitQuestionsBuffer');
 
 const storageSelectorByEnv = (env) => {
     if (env === 'staging') {
@@ -128,6 +129,7 @@ router.post('/grade',(req, res) => {
             let numOfFiles = files.length;
             const answerSheet = files[0];
             const answerKey = files[1];
+            console.log(Object.keys(answerSheet));
 
             // file checks
             if (numOfFiles !== 2) { // didn't receive both files (43)
@@ -148,35 +150,50 @@ router.post('/grade',(req, res) => {
                 // Creating uuid names for azure
                 let answerKeyId = uuidv7();
                 let answerKeyFileName = `${answerKeyId}.pdf`;
+                answerKey.filename = answerKeyFileName;
+
                 let attemptId = uuidv7();
                 let attemptFileName = `${attemptId}.pdf`;
-
+                answerSheet.filename = attemptFileName;
                 // upload into azure storage
-                const shareName = process.env.AZUREFILESHARENAME;
-                const directory = process.env.AZUREFILEDIRECTORY;
-                await azureFileUpload(shareServiceClient, shareName, directory, files[0].buffer, attemptFileName);
-                await azureFileUpload(shareServiceClient, shareName, directory, files[1].buffer, answerKeyFileName);
-                saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
+                //const shareName = process.env.AZUREFILESHARENAME;
+                //const directory = process.env.AZUREFILEDIRECTORY;
+                //await azureFileUpload(shareServiceClient, shareName, directory, files[0].buffer, attemptFileName);
+                //await azureFileUpload(shareServiceClient, shareName, directory, files[1].buffer, answerKeyFileName);
+                //saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
             } else {
                 // local implementation (multer configured to generate uuid names)
                 let answerKeyId = path.basename(files[0].filename, '.pdf');
                 let answerKeyFileName = files[0].filename;
                 let attemptId = path.basename(files[1].filename, '.pdf');
                 let attemptFileName = files[1].filename;
-                saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
+                //saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
             }
 
             // process answer sheet and answer key
             try {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
-                const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
                 
-                res.status(200).send({
-                    'message': 'marking successful', 
-                    'data': response.output_text,
-                    'answer_sheet': markedImages.answerSheet
-                });
-                return;
+                if (process.env.NODE_ENV == 'staging') {
+                    const response = await splitQuestionsBuffer(files[0].buffer, markedImages.answerSheetFilename, files[1].buffer, markedImages.answerKeyFilename);
+                    
+                    res.status(200).send({
+                        'message': 'marking successful', 
+                        'data': response.output_text,
+                        'answer_sheet': markedImages.answerSheet
+                    });
+                    return;
+                } else {
+                    const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
+                    
+                    res.status(200).send({
+                        'message': 'marking successful', 
+                        'data': response.output_text,
+                        'answer_sheet': markedImages.answerSheet
+                    });
+                    return;
+                }
+                
             } catch(err) {
               console.log(err);
                 res.status(400).send({'message': 'An error occured while marking. EC_45'});
