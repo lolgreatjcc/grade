@@ -19,7 +19,7 @@ const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
   return {
     prompt: {
       "id": "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
-      "version": "3"
+      "version": "4"
     },
     input: [
       {
