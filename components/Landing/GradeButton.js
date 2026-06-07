@@ -1,4 +1,6 @@
-﻿import { Ponomar } from "next/font/google"
+﻿'use-client';
+
+import { Ponomar } from "next/font/google"
 import styles from './LandingButtons.module.css';
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -6,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { useLocalStorage } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { useAnswerSheet } from "@/stores/useAnswerSheet";
+import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
 
 const ponomar = Ponomar({
   subsets: ['latin'],
@@ -18,7 +20,8 @@ export default function GradeButton({ answerSheet, answerKey }) {
   //const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet", null);
   const [loading, setLoading] = useState(false);
   const session = useSession().data;
-  const { answerSheetImageArr, updateAnswerSheetImageArr } = useAnswerSheet();
+  const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
+  const setAnswerSheetImageArr = useAnswerSheetStore((state) => state.setAnswerSheetImageArr);
   const router = useRouter();
 
   async function grade(event) {
@@ -38,7 +41,7 @@ export default function GradeButton({ answerSheet, answerKey }) {
     }).then((result) => {
       saveMarkedData(JSON.parse(result.data.data));
       //saveAnswerSheetImageArr(result.data.answer_sheet);
-      updateAnswerSheetImageArr(result.data.answer_sheet)
+      setAnswerSheetImageArr(result.data.answer_sheet)
       //router.push('/grade');
 
     }).catch((err) => {
@@ -49,10 +52,11 @@ export default function GradeButton({ answerSheet, answerKey }) {
   }
 
   useEffect(() => {
-    if (answerSheetImageArr != null && markedData != null) {
+    console.log(answerSheetImageArr)
+    if (answerSheetImageArr != null) {
       router.push('/grade');
     }
-  }, [answerSheetImageArr, markedData])
+  }, [answerSheetImageArr])
 
   return (
     <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>
