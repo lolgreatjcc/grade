@@ -1,3 +1,5 @@
+'use-client';
+
 import AnswerKeyButton from "@/components/Landing/AnswerKeyButton";
 import AnswerSheetButton from "@/components/Landing/AnswerSheetButton";
 import GradeButton from "@/components/Landing/GradeButton";

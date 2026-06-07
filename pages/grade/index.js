@@ -1,4 +1,6 @@
-﻿import MarkSection from "@/components/Grade/MarkSection";
+﻿'use-client';
+
+import MarkSection from "@/components/Grade/MarkSection";
 import styles from './index.module.css';
 import exampleQuizPage from "./exampleQuiz.png"
 import Image from "next/image";
@@ -6,18 +8,17 @@ import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useRouter } from "next/router";
-import { useAnswerSheet } from "@/stores/useAnswerSheet";
+import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
 
 export default function Grade() {
 
   const [markedData, setMarkedData] = useLocalStorage("grade-markedData");
-  //const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet");
-  const [imageArrLoaded, setImageArrLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [minPage, setMinPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [currentQuestionList, setCurrentQuestionList] = useState([]);
-  const { answerSheetImageArr, resetAnswerSheetImageArr } = useAnswerSheet();
+  const { resetAnswerSheetImageArr } = useAnswerSheetStore((state) => state,);
+  const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
 
 
   // Finds smallest page and associated questions on first load..
@@ -62,9 +63,9 @@ export default function Grade() {
     setCurrentQuestionList(newCurrentQuestionList);
   }, [currentPage])
 
-  
-
-
+  useEffect(() => {
+    console.log(answerSheetImageArr);
+  }, []);
 
   const listMarkSections = currentQuestionList.map((question, index) => {
 
@@ -98,7 +99,6 @@ export default function Grade() {
     router.back();
   }
 
-
   return (
     <div className="min-h-screen">
       <div className="absolute flex justify-between w-screen">
@@ -117,7 +117,10 @@ export default function Grade() {
       </div>
 
       <div className={`${styles.mainParent} grid grid-cols-12 p-15  `}>
-          <Image className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr ? answerSheetImageArr[currentPage - 1].dataUrl : null} width={500} height={1000} alt="quiz" /> 
+          { answerSheetImageArr != null ?
+            <Image className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
+            <Image className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
+            }
         <div layout className="col-span-7 flex flex-col justify-between">
           <div>
             <LayoutGroup className="flex-grow-1">
