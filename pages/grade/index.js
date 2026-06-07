@@ -72,6 +72,7 @@ export default function Grade() {
         userAnswer={question.userAnswer}
         correctAnswer={question.correctAnswer}
         questionNumber={question.questionNumber}
+        questionText={question.questionText}
       />
     )
   });
