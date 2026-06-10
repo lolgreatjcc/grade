@@ -20,9 +20,14 @@ const { ShareServiceClient } = require('@azure/storage-file-share');
 const connectionString = process.env.AZURESTORAGECONNECTIONSTRING;
 const shareServiceClient = connectionString ? ShareServiceClient.fromConnectionString(connectionString) : "";
 
+const fs = require('fs');
+
 // File handling
 const path = require('path');
 const multer = require('multer');
+const { base64 } = require('zod');
+const openAIFileUpload = require('./openAI/openAIFileUpload');
+const findBoundaries = require('./gradeUtils/findBoundaries');
 
 const storageSelectorByEnv = (env) => {
     if (env === 'staging') {
@@ -184,6 +189,38 @@ router.post('/grade',(req, res) => {
             }
         }    
     }) 
+})
+
+
+router.post('/grade/marking', async (req, res) => {
+
+  let base64pageImage = req.body.pageImage;
+  // let base64Img = pageImage.split(';base64,').pop();
+
+  // let imageFileName = uuidv7() + '.png';
+
+  // fs.writeFile(`./mediaUploadTemp/${imageFileName}`, base64Img, {encoding: 'base64'}, function(err) {
+  //   console.log('File created');
+  // });
+
+  // const uploadedFile = await openAIFileUpload(pageImage);
+
+  let questionData = req.body.questions;
+
+  let parsedQuestionData = [];
+  for(let i = 0; i < questionData.length; i++) {
+    const newObj = {
+      questionNumber: questionData[i].number,
+      questionText: questionData[i].questionText,
+      questionPage:  questionData[i].questionPage
+    };
+    parsedQuestionData.push(newObj);
+  }
+  
+  const boundaries = await findBoundaries(base64pageImage, parsedQuestionData);
+  res.status(200).send(boundaries.output_text);
+
+
 })
 
 module.exports = router;
