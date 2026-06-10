@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'staging') {
 
 const port = 3001
 
-const jsonParser = bodyParser.json();
+const jsonParser = bodyParser.json({ limit: '10mb'});
 
 //app.options('*', cors());
 app.use(cors());
@@ -25,8 +25,7 @@ const auth = require('./controller/auth.js');
 //use controllers
 app.use(grade);
 app.use(auth);
-
-app.get('/', (req,res) => {
+app.get('/', (req, res) => {
   res.send("elp, im in orbit");
 });
 
