@@ -1,12 +1,15 @@
-﻿import { Ponomar } from "next/font/google"
+﻿'use-client';
+
+import { Ponomar } from "next/font/google"
 import styles from './LandingButtons.module.css';
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useLocalStorage } from "usehooks-ts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import config from "@/config";
+import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
+
 const ponomar = Ponomar({
   subsets: ['latin'],
   weight: '400'
@@ -14,9 +17,11 @@ const ponomar = Ponomar({
 
 export default function GradeButton({ answerSheet, answerKey }) {
   const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
-  const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet", null);
+  //const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet", null);
   const [loading, setLoading] = useState(false);
   const session = useSession().data;
+  const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
+  const setAnswerSheetImageArr = useAnswerSheetStore((state) => state.setAnswerSheetImageArr);
   const router = useRouter();
 
   async function grade(event) {
@@ -30,13 +35,14 @@ export default function GradeButton({ answerSheet, answerKey }) {
     formData.append('user_id', session ? session.user.user_id : undefined)
       formData.append('files', answerSheet);
       formData.append('files', answerKey);
-      const response = await axios.post(`${config.backendBaseUrl}/grade`, formData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/grade`, formData, {
         'headers': session ? { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${session.user.token}` }
                   : { 'Content-Type': 'multipart/form-data'}
     }).then((result) => {
       saveMarkedData(JSON.parse(result.data.data));
-      saveAnswerSheetImageArr(result.data.answer_sheet);
-      router.push('/grade');
+      //saveAnswerSheetImageArr(result.data.answer_sheet);
+      setAnswerSheetImageArr(result.data.answer_sheet)
+      //router.push('/grade');
 
     }).catch((err) => {
       console.log(err)
@@ -44,6 +50,13 @@ export default function GradeButton({ answerSheet, answerKey }) {
       setLoading(false);
     })
   }
+
+  useEffect(() => {
+    console.log(answerSheetImageArr)
+    if (answerSheetImageArr != null) {
+      router.push('/grade');
+    }
+  }, [answerSheetImageArr])
 
   return (
     <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>

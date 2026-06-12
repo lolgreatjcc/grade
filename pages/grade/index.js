@@ -1,4 +1,6 @@
-﻿import MarkSection from "@/components/Grade/MarkSection";
+﻿'use-client';
+
+import MarkSection from "@/components/Grade/MarkSection";
 import styles from './index.module.css';
 import exampleQuizPage from "./exampleQuiz.png"
 import Image from "next/image";
@@ -6,15 +8,17 @@ import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useRouter } from "next/router";
+import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
 
 export default function Grade() {
 
   const [markedData, setMarkedData] = useLocalStorage("grade-markedData");
-  const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet");
   const [currentPage, setCurrentPage] = useState(1);
   const [minPage, setMinPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [currentQuestionList, setCurrentQuestionList] = useState([]);
+  const { resetAnswerSheetImageArr } = useAnswerSheetStore((state) => state,);
+  const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
 
 
   // Finds smallest page and associated questions on first load..
@@ -59,9 +63,9 @@ export default function Grade() {
     setCurrentQuestionList(newCurrentQuestionList);
   }, [currentPage])
 
-  
-
-
+  useEffect(() => {
+    console.log(answerSheetImageArr);
+  }, []);
 
   const listMarkSections = currentQuestionList.map((question, index) => {
 
@@ -92,9 +96,9 @@ export default function Grade() {
   const router = useRouter();
   const handleExit = () => {
     setMarkedData(null);
+    resetAnswerSheetImageArr();
     router.back();
   }
-
 
   return (
     <div className="min-h-screen">
@@ -114,7 +118,10 @@ export default function Grade() {
       </div>
 
       <div className={`${styles.mainParent} grid grid-cols-12 p-15  `}>
-          <Image className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage-1]?.dataUrl} width={500} height={1000} alt="quiz" /> 
+          { answerSheetImageArr != null ?
+            <Image className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
+            <Image className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
+            }
         <div layout className="col-span-7 flex flex-col justify-between">
           <div>
             <LayoutGroup className="flex-grow-1">

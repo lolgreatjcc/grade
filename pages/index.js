@@ -1,3 +1,5 @@
+'use-client';
+
 import AnswerKeyButton from "@/components/Landing/AnswerKeyButton";
 import AnswerSheetButton from "@/components/Landing/AnswerSheetButton";
 import GradeButton from "@/components/Landing/GradeButton";
@@ -6,12 +8,13 @@ import Menu from "@/components/Menu/Menu";
 import styles from './index.module.css';
 import React, { useState } from "react";
 import { pdfToImg } from "pdftoimg-js/browser";
-import { useSession } from "next-auth/react";
+
 
 export default function Home() {
 
   const [answerSheet, setAnswerSheet] = useState(null);
   const [answerKey, setAnswerKey] = useState(null);
+  
 
   const handleFile = async (event, setFileState, setPreviewImage) => {
     const file = event.target.files[0];
@@ -32,9 +35,6 @@ export default function Home() {
     }
       
   }
-
-  const session = useSession().data;
-  console.log(session);
 
   return (
     <div className="min-h-screen">
