@@ -1,4 +1,6 @@
-﻿import MarkSection from "@/components/Grade/MarkSection";
+﻿'use-client';
+
+import MarkSection from "@/components/Grade/MarkSection";
 import styles from './index.module.css';
 import exampleQuizPage from "./exampleQuiz.png"
 import NextImage from "next/image";
@@ -10,18 +12,20 @@ import GradeExitBtn from "@/components/Grade/GradeExitBtn";
 import config from "@/config";
 import axios from "axios";
 import QuestionOverlay from "@/components/Grade/QuestionOverlay";
+import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
 
 export default function Grade() {
 
   const [initPage, setInitPage] = useState(true);
 
   const [markedData, setMarkedData] = useLocalStorage("grade-markedData");
-  const [answerSheetImageArr, saveAnswerSheetImageArr] = useLocalStorage("grade-answerSheet");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentImage, setCurrentImage] = useState(null);
   const [minPage, setMinPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [currentQuestionList, setCurrentQuestionList] = useState([]);
+  const { resetAnswerSheetImageArr } = useAnswerSheetStore((state) => state,);
+  const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
 
   const [questionOverlays, setQuestionOverlays] = useState([]);
 
@@ -154,7 +158,6 @@ export default function Grade() {
     )
   })
 
-
   return (
     <div className="min-h-screen">
       <div className="absolute flex justify-between w-screen">
@@ -170,7 +173,10 @@ export default function Grade() {
       <div className={`${styles.mainParent} grid grid-cols-12 p-15`}>
         <div className="col-span-4 max-h-[95vh]">
           <div className={`relative ${styles.quizPageParent}`}>
-            <NextImage className={`${styles.quizPage}`} src={currentImage} width={500} height={1000} alt="quiz" />
+          { answerSheetImageArr != null ?
+            <NextImage className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
+            <NextImage className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
+            }
             {listQuestionOverlays}
             {/* <QuestionOverlay />
             <div className={`${styles.questionBoundary}`} style={{ top: '59%', left: '7%', right: '10%', bottom: '8%' }} /> */}
