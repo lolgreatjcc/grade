@@ -129,7 +129,6 @@ router.post('/grade',(req, res) => {
             let numOfFiles = files.length;
             const answerSheet = files[0];
             const answerKey = files[1];
-            console.log(Object.keys(answerSheet));
 
             // file checks
             if (numOfFiles !== 2) { // didn't receive both files (43)
