@@ -176,9 +176,15 @@ router.post('/grade',(req, res) => {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
                 const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
                 
+                let splitQuestionsData = JSON.parse(response.output_text);
+                for (let i = 0; i < splitQuestionsData.questions.length; i++) {
+                  splitQuestionsData.questions[i].uuid = uuidv7();
+                }
+                splitQuestionsData = JSON.stringify(splitQuestionsData);
+
                 res.status(200).send({
                     'message': 'marking successful', 
-                    'data': response.output_text,
+                    'data': splitQuestionsData,
                     'answer_sheet': markedImages.answerSheet
                 });
                 return;
@@ -210,15 +216,26 @@ router.post('/grade/marking', async (req, res) => {
   let parsedQuestionData = [];
   for(let i = 0; i < questionData.length; i++) {
     const newObj = {
-      questionNumber: questionData[i].number,
+      // uuid: questionData[i].uuid,
+      //questionNumber: questionData[i].questionNumber,
       questionText: questionData[i].questionText,
       questionPage:  questionData[i].questionPage
     };
     parsedQuestionData.push(newObj);
   }
   
-  const boundaries = await findBoundaries(base64pageImage, parsedQuestionData);
-  res.status(200).send(boundaries.output_text);
+  let boundaries = await findBoundaries(base64pageImage, parsedQuestionData);
+  let parsedBoundaries = JSON.parse(boundaries.output_text);
+  for (let i = 0; i < questionData.length; i++) {
+    const current_uuid = questionData[i].uuid;
+    parsedBoundaries.questions[i].uuid = current_uuid;
+  }
+
+  
+
+  // error checking for uuid?
+  res.status(200).send(parsedBoundaries);
+  //res.status(200).send();
 
 
 })

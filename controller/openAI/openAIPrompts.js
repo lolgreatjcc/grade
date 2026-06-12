@@ -52,9 +52,10 @@ const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
 }
 
 const simpleQuestionFormat = z.object({
-  questionNumber: z.string(),
-  startingBoundary: z.array(z.int()),
-  endingBoundary: z.array(z.int())
+  // uuid: z.string(),
+  // questionNumber: z.string(),
+  top_left_coordinate: z.array(z.int()),
+  bottom_right_coordinate: z.array(z.int())
 })
 
 const findBoundariesFormat = z.object({
@@ -65,7 +66,7 @@ const findBoundaries = (base64Image, questionData) => {
   return {
     prompt: {
       "id": "pmpt_6a2954b24638819488c9d205eeff9cec08452551eb30dbf9",
-      "version": "4"
+      "version": "5"
     },
     input: [
       {
