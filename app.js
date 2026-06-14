@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'staging') {
   require('dotenv').config({ path: `./.env` });
 }
 
-const port = 3001
+const port = process.env.PORT || 3001;
 
 const jsonParser = bodyParser.json({ limit: '10mb'});
 
