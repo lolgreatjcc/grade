@@ -20,9 +20,14 @@ const { ShareServiceClient } = require('@azure/storage-file-share');
 const connectionString = process.env.AZURESTORAGECONNECTIONSTRING;
 const shareServiceClient = connectionString ? ShareServiceClient.fromConnectionString(connectionString) : "";
 
+const fs = require('fs');
+
 // File handling
 const path = require('path');
 const multer = require('multer');
+const { base64 } = require('zod');
+const openAIFileUpload = require('./openAI/openAIFileUpload');
+const findBoundaries = require('./gradeUtils/findBoundaries');
 const splitQuestionsBuffer = require('./gradeUtils/splitQuestionsBuffer');
 
 const storageSelectorByEnv = (env) => {
@@ -172,27 +177,26 @@ router.post('/grade',(req, res) => {
             // process answer sheet and answer key
             try {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
-                
+                let response = undefined;
+              
                 if (process.env.NODE_ENV == 'staging') {
-                    const response = await splitQuestionsBuffer(files[0].buffer, markedImages.answerSheetFilename, files[1].buffer, markedImages.answerKeyFilename);
-                    
-                    res.status(200).send({
-                        'message': 'marking successful', 
-                        'data': response.output_text,
-                        'answer_sheet': markedImages.answerSheet
-                    });
-                    return;
+                  response = await splitQuestionsBuffer(files[0].buffer, markedImages.answerSheetFilename, files[1].buffer, markedImages.answerKeyFilename);
                 } else {
-                    const response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
-                    
-                    res.status(200).send({
-                        'message': 'marking successful', 
-                        'data': response.output_text,
-                        'answer_sheet': markedImages.answerSheet
-                    });
-                    return;
+                  response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
                 }
-                
+              
+                let splitQuestionsData = JSON.parse(response.output_text);
+                for (let i = 0; i < splitQuestionsData.questions.length; i++) {
+                  splitQuestionsData.questions[i].uuid = uuidv7();
+                }
+                splitQuestionsData = JSON.stringify(splitQuestionsData);
+
+                res.status(200).send({
+                    'message': 'marking successful', 
+                    'data': splitQuestionsData,
+                    'answer_sheet': markedImages.answerSheet
+                });
+                return;
             } catch(err) {
               console.log(err);
                 res.status(400).send({'message': 'An error occured while marking. EC_45'});
@@ -200,6 +204,49 @@ router.post('/grade',(req, res) => {
             }
         }    
     }) 
+})
+
+
+router.post('/grade/marking', async (req, res) => {
+
+  let base64pageImage = req.body.pageImage;
+  // let base64Img = pageImage.split(';base64,').pop();
+
+  // let imageFileName = uuidv7() + '.png';
+
+  // fs.writeFile(`./mediaUploadTemp/${imageFileName}`, base64Img, {encoding: 'base64'}, function(err) {
+  //   console.log('File created');
+  // });
+
+  // const uploadedFile = await openAIFileUpload(pageImage);
+
+  let questionData = req.body.questions;
+
+  let parsedQuestionData = [];
+  for(let i = 0; i < questionData.length; i++) {
+    const newObj = {
+      // uuid: questionData[i].uuid,
+      //questionNumber: questionData[i].questionNumber,
+      questionText: questionData[i].questionText,
+      questionPage:  questionData[i].questionPage
+    };
+    parsedQuestionData.push(newObj);
+  }
+  
+  let boundaries = await findBoundaries(base64pageImage, parsedQuestionData);
+  let parsedBoundaries = JSON.parse(boundaries.output_text);
+  for (let i = 0; i < questionData.length; i++) {
+    const current_uuid = questionData[i].uuid;
+    parsedBoundaries.questions[i].uuid = current_uuid;
+  }
+
+  
+
+  // error checking for uuid?
+  res.status(200).send(parsedBoundaries);
+  //res.status(200).send();
+
+
 })
 
 module.exports = router;

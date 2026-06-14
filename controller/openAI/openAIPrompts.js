@@ -11,9 +11,10 @@ const question = z.object({
   whereUserWentWrong: z.string(),
   questionPage: z.int(),
 })
-const splitQuestions = z.object({
+const splitQuestionsDataFormat = z.object({
   questions: z.array(question)
 })
+
 
 const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
   return {
@@ -45,12 +46,58 @@ const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
       "web_search_call.action.sources"
     ],
     text: {
-      format: zodTextFormat(splitQuestions, 'split_questions')
+      format: zodTextFormat(splitQuestionsDataFormat, 'split_questions')
     }
   }
 }
 
+const simpleQuestionFormat = z.object({
+  // uuid: z.string(),
+  // questionNumber: z.string(),
+  top_left_coordinate: z.array(z.int()),
+  bottom_right_coordinate: z.array(z.int())
+})
+
+const findBoundariesFormat = z.object({
+  questions: z.array(simpleQuestionFormat)
+})
+
+const findBoundaries = (base64Image, questionData) => {
+  return {
+    prompt: {
+      "id": "pmpt_6a2954b24638819488c9d205eeff9cec08452551eb30dbf9",
+      "version": "5"
+    },
+    input: [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": JSON.stringify(questionData)
+          },
+          {
+            "type": "input_image",
+            "image_url": base64Image
+          }
+        ]
+      },
+    ],
+    reasoning: {
+      "summary": "concise"
+    },
+    store: true,
+    include: [
+      "reasoning.encrypted_content",
+      "web_search_call.action.sources"
+    ],
+    text: {
+      format: zodTextFormat(findBoundariesFormat, 'find_boundaries')
+    }
+  }
+}
 
 module.exports = {
-  splitQuestionsPrompt: splitQuestionsPrompt
+  splitQuestionsPrompt: splitQuestionsPrompt,
+  findBoundaries: findBoundaries
 }
