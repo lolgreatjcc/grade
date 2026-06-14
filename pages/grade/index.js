@@ -3,27 +3,35 @@
 import MarkSection from "@/components/Grade/MarkSection";
 import styles from './index.module.css';
 import exampleQuizPage from "./exampleQuiz.png"
-import Image from "next/image";
+import NextImage from "next/image";
 import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useRouter } from "next/router";
+import GradeExitBtn from "@/components/Grade/GradeExitBtn";
+import config from "@/config";
+import axios from "axios";
+import QuestionOverlay from "@/components/Grade/QuestionOverlay";
 import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
 
 export default function Grade() {
 
+  const [initPage, setInitPage] = useState(true);
+
   const [markedData, setMarkedData] = useLocalStorage("grade-markedData");
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentImage, setCurrentImage] = useState(null);
   const [minPage, setMinPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [currentQuestionList, setCurrentQuestionList] = useState([]);
   const { resetAnswerSheetImageArr } = useAnswerSheetStore((state) => state,);
   const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
 
+  const [questionOverlays, setQuestionOverlays] = useState([]);
 
   // Finds smallest page and associated questions on first load..
   useEffect(() => {
-    if (markedData) {
+    if (markedData && initPage) {
       let questions = markedData.questions;
       let lowestPage = questions[0].questionPage;
       let highestPage = questions[0].questionPage;
@@ -33,14 +41,14 @@ export default function Grade() {
           lowestPage = markedData.questions[i].questionPage
         }
 
-        if(markedData.questions[i].questionPage > highestPage) {
+        if (markedData.questions[i].questionPage > highestPage) {
           highestPage = markedData.questions[i].questionPage
         }
       }
 
       const newCurrentQuestionList = [];
       for (let i = 0; i < markedData.questions.length; i++) {
-        if (markedData.questions[i].questionPage == currentPage) {
+        if (markedData.questions[i].questionPage == lowestPage) {
           newCurrentQuestionList.push(markedData.questions[i]);
         }
       }
@@ -48,24 +56,73 @@ export default function Grade() {
       setCurrentPage(lowestPage);
       setMinPage(lowestPage);
       setMaxPage(highestPage);
+      setCurrentImage(answerSheetImageArr[lowestPage - 1].dataUrl)
       setCurrentQuestionList(newCurrentQuestionList);
+      setInitPage(false);
     }
   }, [markedData])
 
+
   // Finds associated questions when current page changes..
+  // Fix with uuid...
   useEffect(() => {
-    const newCurrentQuestionList = [];
+    let newCurrentQuestionList = [];
     for (let i = 0; i < markedData.questions.length; i++) {
       if (markedData.questions[i].questionPage == currentPage) {
         newCurrentQuestionList.push(markedData.questions[i]);
       }
     }
     setCurrentQuestionList(newCurrentQuestionList);
-  }, [currentPage])
+
+    let newCurrentImage = answerSheetImageArr[currentPage - 1].dataUrl;
+    setCurrentImage(newCurrentImage);
+
+
+  }, [currentPage, markedData])
 
   useEffect(() => {
-    console.log(answerSheetImageArr);
-  }, []);
+    let resolvedBoundaries = true;
+    for (let i = 0; i < currentQuestionList.length; i++) {
+      resolvedBoundaries = currentQuestionList[i].topLeftCoordinate ? true : false;
+    }
+
+    if (resolvedBoundaries == false && markedData && newCurrentImage) {
+      const requestBody = {
+        questions: newCurrentQuestionList,
+        pageImage: currentImage
+      }
+      axios.post(`${config.backendBaseUrl}/grade/marking`, requestBody).then(result => {
+
+        const newMarkedData = markedData;
+
+        for (let i = 0; i < result.data.questions.length; i++) {
+
+          const currentQuestion = result.data.questions[i];
+
+          for (let j = 0; j < markedData.questions.length; j++) {
+            const currentCachedQuestion = markedData.questions[j];
+            if (currentQuestion.uuid == currentCachedQuestion.uuid) {
+              newMarkedData.questions[j].topLeftCoordinate = currentQuestion.top_left_coordinate;
+              newMarkedData.questions[j].bottomRightCoordinate = currentQuestion.bottom_right_coordinate;
+            }
+          }
+
+        }
+        setMarkedData(newMarkedData);
+
+      }).catch((err) => {
+        console.log(err);
+      });
+    } 
+
+
+  }, [currentQuestionList, currentImage]);
+
+
+
+
+
+
 
   const listMarkSections = currentQuestionList.map((question, index) => {
 
@@ -82,34 +139,30 @@ export default function Grade() {
   });
 
   const handleNextPage = () => {
-    if(currentPage < maxPage) {
+    if (currentPage < maxPage) {
       setCurrentPage(currentPage + 1);
     }
   }
 
   const handlePrevPage = () => {
-    if(currentPage > minPage) {
+    if (currentPage > minPage) {
       setCurrentPage(currentPage - 1);
     }
   }
 
-  const router = useRouter();
-  const handleExit = () => {
-    setMarkedData(null);
-    resetAnswerSheetImageArr();
-    router.back();
-  }
+
+
+  const listQuestionOverlays = currentQuestionList.map((question, index) => {
+    return (
+      <QuestionOverlay question={question} currentImage={currentImage}/>
+    )
+  })
 
   return (
     <div className="min-h-screen">
       <div className="absolute flex justify-between w-screen">
 
-        <div className={`${styles.exitParent} flex items-center pt-3 ps-3`} onClick={handleExit}>
-          <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor">
-            <path d="m274-450 248 248-42 42-320-320 320-320 42 42-248 248h526v60H274Z" />
-          </svg>
-          <h1 className="text-xl ms-3">Exit</h1>
-        </div>
+        <GradeExitBtn />
 
 
         {/* <div className="pt-3 pe-3">
@@ -117,12 +170,20 @@ export default function Grade() {
         </div> */}
       </div>
 
-      <div className={`${styles.mainParent} grid grid-cols-12 p-15  `}>
+      <div className={`${styles.mainParent} grid grid-cols-12 p-15`}>
+        <div className="col-span-4 max-h-[95vh]">
+          <div className={`relative ${styles.quizPageParent}`}>
           { answerSheetImageArr != null ?
-            <Image className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
-            <Image className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
+            <NextImage className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
+            <NextImage className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
             }
-        <div layout className="col-span-7 flex flex-col justify-between">
+            {listQuestionOverlays}
+            {/* <QuestionOverlay />
+            <div className={`${styles.questionBoundary}`} style={{ top: '59%', left: '7%', right: '10%', bottom: '8%' }} /> */}
+          </div>
+
+        </div>
+        <div layout className="col-span-8 flex flex-col justify-between max-h-[95vh]">
           <div>
             <LayoutGroup className="flex-grow-1">
               {listMarkSections}

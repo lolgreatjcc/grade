@@ -8,7 +8,8 @@ import Menu from "@/components/Menu/Menu";
 import styles from './index.module.css';
 import React, { useState } from "react";
 import { pdfToImg } from "pdftoimg-js/browser";
-
+import { useSession } from "next-auth/react";
+import { useInterval } from "usehooks-ts";
 
 export default function Home() {
 
@@ -24,7 +25,7 @@ export default function Home() {
         console.log("file too big")
         return false;
       } else {
-        const previewImage = await pdfToImg(URL.createObjectURL(file), {'pages': 'firstPage'});
+        const previewImage = await pdfToImg(URL.createObjectURL(file), { 'pages': 'firstPage' });
         setPreviewImage(previewImage);
         setFileState(file);
         return true;
@@ -33,7 +34,6 @@ export default function Home() {
       setPreviewImage(null);
       return null;
     }
-      
   }
 
   return (
@@ -51,13 +51,13 @@ export default function Home() {
       >
         <div className="flex">
 
-          <AnswerSheetButton setAnswerSheet={setAnswerSheet} handleFile={handleFile}/>
+          <AnswerSheetButton setAnswerSheet={setAnswerSheet} handleFile={handleFile} />
 
-          <AnswerKeyButton setAnswerKey={setAnswerKey} handleFile={handleFile}/>
+          <AnswerKeyButton setAnswerKey={setAnswerKey} handleFile={handleFile} />
 
         </div>
 
-        <GradeButton answerSheet={answerSheet} answerKey={answerKey}/>
+        <GradeButton answerSheet={answerSheet} answerKey={answerKey} />
       </div>
 
 
