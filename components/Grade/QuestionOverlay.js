@@ -2,12 +2,17 @@
 import { useEffect, useState } from 'react';
 import styles from './QuestionOverlay.module.css'
 
+import useHoveredQnStore from '@/stores/tooltip/HoveredQnStore.js';
+
 export default function QuestionOverlay({ question, currentImage }) {
 
 
 
   const [imageHeight, setImageHeight] = useState(1);
   const [imageWidth, setImageWidth] = useState(1);
+
+  const { hoveredQn, setHoveredQn, clearHoveredQn } = useHoveredQnStore()
+
 
   useEffect(() => {
     if (!currentImage) return;
@@ -27,15 +32,15 @@ export default function QuestionOverlay({ question, currentImage }) {
   const topLeftX = topLeftCoordinate[0];
   const topLeftY = topLeftCoordinate[1];
 
-  const leftOffset = topLeftX/imageWidth * 100;
-  const topOffset = topLeftY/imageHeight * 100;
+  const leftOffset = topLeftX / imageWidth * 100;
+  const topOffset = topLeftY / imageHeight * 100;
 
   const bottomRightCoordinate = question.bottomRightCoordinate;
   const bottomRightX = bottomRightCoordinate[0];
   const bottomRightY = bottomRightCoordinate[1];
 
-  const rightOffset = 100 - (bottomRightX/imageWidth*100);
-  const bottomOffset = 100 - (bottomRightY/imageHeight*100);
+  const rightOffset = 100 - (bottomRightX / imageWidth * 100);
+  const bottomOffset = 100 - (bottomRightY / imageHeight * 100);
 
 
 
@@ -46,6 +51,6 @@ export default function QuestionOverlay({ question, currentImage }) {
 
 
   return (
-    <div className={`${styles.questionBoundary}`} style={{ top: topOffset + '%', left: leftOffset + '%', right: rightOffset + '%', bottom: bottomOffset + '%' }} />
+    <div onMouseEnter={() => setHoveredQn(question.uuid)} onMouseLeave={clearHoveredQn} className={`${styles.questionBoundary}`} style={{ top: topOffset + '%', left: leftOffset + '%', right: rightOffset + '%', bottom: bottomOffset + '%' }} />
   )
 }

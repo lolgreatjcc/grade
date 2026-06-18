@@ -134,6 +134,7 @@ export default function Grade() {
         correctAnswer={question.correctAnswer}
         questionNumber={question.questionNumber}
         questionText={question.questionText}
+        uuid={question.uuid}
       />
     )
   });
