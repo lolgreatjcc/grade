@@ -86,9 +86,6 @@ export default function Grade() {
       resolvedBoundaries = currentQuestionList[i].topLeftCoordinate ? true : false;
     }
 
-    console.log(resolvedBoundaries);
-    console.log(markedData);
-    console.log(currentImage);
     if (resolvedBoundaries == false && markedData && currentImage) {
       const requestBody = {
         questions: currentQuestionList,
