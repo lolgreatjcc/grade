@@ -6,6 +6,10 @@
   width: 100%
 }
 
+.markParentHovered {
+  padding: 1px;
+}
+
 .markTriangle {
   position: relative;
   bottom: 10px;
@@ -20,6 +24,11 @@
   border-radius: 4px;
   padding: 12px;
   flex-grow: 1;
+  border: 3px solid #E7E0D0;
+}
+
+.markBodyHovered {
+  border: 3px solid #BAA678;
 }
 
 .correctnessMessageCorrect {
