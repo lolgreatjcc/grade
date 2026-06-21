@@ -13,6 +13,10 @@ export default function Menu() {
         router.push('/login');
     }
 
+    const handleGenerateButton = () => {
+        router.push('/generate');
+    }
+
     const handleMenuButton = () => {
         setExpanded(!expanded);
     }
@@ -38,13 +42,13 @@ export default function Menu() {
                         </g>
                     </svg>
                 </div>
-                <div className={`${styles.menuItem} mx-3 mt-1 mb-3`} onClick={handleLoginButton}><h1 className={`${styles.menuItemText}`}>{session ? "Sign Out" : "Login"}</h1></div>
-                <div className={`${styles.menuItem} m-3`}><h1 className={`${styles.menuItemText}`}>Generate Answer Sheet</h1></div>
+                <div className={`${styles.menuItem} mx-3 mt-1 mb-3`} onClick={handleLoginButton}><h1 className={`${styles.menuItemText} text-white`}>{session ? "Sign Out" : "Login"}</h1></div>
+                <div className={`${styles.menuItem} m-3`} onClick={handleGenerateButton}><h1 className={`${styles.menuItemText} text-white`}>Generate Answer Sheet</h1></div>
             </div> 
             :
             <div className={`${styles.iconContainer}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" onClick={handleMenuButton}>
-                    <path fill="currentColor" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
+                <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" stroke="#ffffff" fill="none" onClick={handleMenuButton}>
+                    <path fill="#ffffff" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
                 </svg>
             </div>
             }

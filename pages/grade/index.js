@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useRouter } from "next/router";
 import GradeExitBtn from "@/components/Grade/GradeExitBtn";
-import config from "@/config";
+
 import axios from "axios";
 import QuestionOverlay from "@/components/Grade/QuestionOverlay";
 import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
@@ -91,7 +91,7 @@ export default function Grade() {
         questions: newCurrentQuestionList,
         pageImage: currentImage
       }
-      axios.post(`${config.backendBaseUrl}/grade/marking`, requestBody).then(result => {
+      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/grade/marking`, requestBody).then(result => {
 
         const newMarkedData = markedData;
 
@@ -192,10 +192,10 @@ export default function Grade() {
           <div className="flex justify-center align-center">
             <div className="flex items-center">
               <div className="p-5" onClick={handlePrevPage}>
-                <svg className={`${styles.quizNavigationBack}`} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
+                <svg className={`${styles.quizNavigation}`} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
               </div>
               <h1 className={`${styles.quizNavText}`}>{currentPage} of {maxPage}</h1>
-              <div className={`p-5 ${styles.quizNavigationForward}`} onClick={handleNextPage}>
+              <div className={`p-5 ${styles.quizNavigation}`} onClick={handleNextPage}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
               </div>
             </div>

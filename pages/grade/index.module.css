@@ -22,24 +22,17 @@
   display: block;
 }
 
-.quizNavigationBack {
+.quizNavigation {
   color: #EFE7D980;
 }
 
-.quizNavigationBack:hover {
+.quizNavigation:hover {
   color: #EFE7D9;
+  cursor: pointer;
 }
 
 .quizNavText {
   font-weight: bold;
-  color: #EFE7D9;
-}
-
-.quizNavigationForward {
-  color: #EFE7D980;
-}
-
-.quizNavigationForward:hover {
   color: #EFE7D9;
 }
 
