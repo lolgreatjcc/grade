@@ -1,27 +1,27 @@
 import OecQuestion from "./OecQuestion";
 
-const constructInitialData = (index, subpart) => {
+const constructInitialData = (index, level) => {
     return {
         "index": index,
         "subpart": [],
-        "isSubpart": subpart || false,
+        "level": level,
         "type": 2,
         "size": 0,
     }
 
 }
 
-const editOecData = (oldNumber, newNumber, oldData, subpart) => {
+const editOecData = (oldNumber, newNumber, oldData, level) => {
     if (newNumber < 0) {
         return [];
     } 
     if (oldData.length === 0) {
         const tempArr = [];
-        for (let i = 0; i < newNumber; i++) tempArr.push(constructInitialData(i, subpart));
+        for (let i = 0; i < newNumber; i++) tempArr.push(constructInitialData(i, level));
         return tempArr;
     } else if (newNumber > oldNumber) {
         const tempArr = [...oldData];
-        for (let i = oldNumber; i < newNumber; i++) tempArr.push(constructInitialData(i, subpart));
+        for (let i = oldNumber; i < newNumber; i++) tempArr.push(constructInitialData(i, level));
         return tempArr;
     } else {
         return oldData.slice(0, newNumber);
@@ -30,12 +30,12 @@ const editOecData = (oldNumber, newNumber, oldData, subpart) => {
 
 export default function Oec({numberOfMcqs, numberOfOec, setNumberOfOec, oecData, setOecData, constructInitialData}) {
 
-    const handleNumberOfOec = (numberOfOec, newNumberOfOec, oecData, subpart) => {
+    const handleNumberOfOec = (numberOfOec, newNumberOfOec, oecData, level) => {
         if (newNumberOfOec < 0) {
             setOecData([]);
             setNumberOfOec(0);
         } else {
-            setOecData(editOecData(numberOfOec, newNumberOfOec, oecData, subpart));
+            setOecData(editOecData(numberOfOec, newNumberOfOec, oecData, level));
             setNumberOfOec(newNumberOfOec); 
         }
     }
@@ -46,7 +46,7 @@ export default function Oec({numberOfMcqs, numberOfOec, setNumberOfOec, oecData,
             <div className={`flex h-min`}>
                 <h1 className={`text-2xl mr-5 text-white`}>Number of Questions</h1>
                 <input defaultValue={0} min={0} className={`text-2xl w-20 focus:outline-hidden border-white border-b-3 text-white text-center`} 
-                onBlur={(event) => handleNumberOfOec(numberOfOec, event.target.valueAsNumber, oecData, false)} 
+                onBlur={(event) => handleNumberOfOec(numberOfOec, event.target.valueAsNumber, oecData, 1)} 
                 type="number"></input>
             </div>
             <div className={``}>
@@ -56,7 +56,7 @@ export default function Oec({numberOfMcqs, numberOfOec, setNumberOfOec, oecData,
                 oecData={oecData}
                 setOecData={setOecData}
                 editOecData={editOecData}
-                isSubpart={false}
+                level={1}
                 />
             </div>
            

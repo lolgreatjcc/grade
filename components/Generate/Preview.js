@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from "react-to-print";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import { pdfToImg } from 'pdftoimg-js/browser';
@@ -15,24 +14,9 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
     const subOption = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
     const roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
     const lines = [];
-    const box = ["w-33 h-16", "w-50 h-30", "w-100 h-70", "w-150 h-100"];
+    const box = ["w-28 h-16", "w-50 h-30", "w-100 h-70", "w-150 h-100"];
     const columns = 28;
-    const rowsPerCol = 8;
-
-
-    const generatePreview = useReactToPrint({
-        "contentRef": previewRef,
-        preserveAfterPrint: true,
-        documentTitle: 'doc.pdf',
-        print: async (printIframe) => {
-            const document = printIframe.contentDocument;
-            if (document) {
-                const html = document.getElementsByTagName("html")[0];
-                console.log(html);
-                htmlToPreview(html);
-            }
-        },
-    });
+    const rowsPerCol = 10;
 
     const htmlToPreview = async () => {
         const element = previewRef.current;
@@ -63,8 +47,9 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
         setPreviewImages(previewImages)     
     }
 
-    const oecPicker = (type, size, questionNumber, subpart) => {
-        let returnedString = `<div class="pr-2">Q${questionNumber}${(subpart !== undefined) ? `(${subOption[subpart]})` : ""}</div>`
+    const oecPicker = (type, size, questionNumber, subQuestion, subPart) => {
+        let returnedString = `<div class="pr-2">Q${questionNumber}${(subQuestion !== undefined) ? 
+            `(${subOption[subQuestion]})` : ""}${(subPart !== undefined) ? `(${roman[subPart]})` : ""}</div>`
         if (type == 1) {
             returnedString += `<div class="w-30 h-auto border-b-2 border-black "></div>`;
         } else {
@@ -125,7 +110,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
             const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol)
             tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol);
             for (let i = 0; i < rowsPerCol; i++ ) {
-                tempContent += `<div class="flex align-center items-center grid ${gridCols} gap-1 ${i + 1 == rowsPerCol ? "" : "mb-1"}">`
+                tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1 ${i + 1 == rowsPerCol ? "" : "mb-1"}">`
                 for (let col = 0; col < requiredCol; col++) {
                     const questionNumber = i + 1 + col * rowsPerCol;
                     if (questionNumber <= numberOfMcqs) {
@@ -149,14 +134,24 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
             tempContent += `<text class="text-base font-bold block">Part B: Open Ended Questions</text>`
             tempContent += `<text>Write your answers within the boxes provided</text>`
             tempContent += `<div class="min-w-full flex flex-wrap mt-4">`;
+
             for (let i = 0; i < numberOfOecs; i++) {
                 const questionNumber = numberOfMcqs + i + 1;
-                const subpartLength = oecData[i].subpart.length;
-                if (subpartLength > 0) {
-                    for (let j = 0; j < subpartLength; j++) { 
-                        tempContent += `<div class="flex pb-6 pr-2 ">`;
-                        tempContent += oecPicker(oecData[i].subpart[j].type, oecData[i].subpart[j].size, questionNumber, j)
-                        tempContent += `</div>`;
+                const subQuestionLength = oecData[i].subpart.length;
+                if (subQuestionLength > 0) {
+                    for (let j = 0; j < subQuestionLength; j++) {
+                        const subpartLength = oecData[i].subpart[j].subpart.length;
+                        if (subpartLength > 0) {
+                            for (let k = 0; k < subpartLength; k++) {
+                                tempContent += `<div class="flex pb-6 pr-2">`;
+                                tempContent += oecPicker(oecData[i].subpart[j].subpart[k].type, oecData[i].subpart[j].subpart[k].size, questionNumber, j, k)
+                                tempContent += `</div>`;
+                            }
+                        } else {
+                            tempContent += `<div class="flex pb-6 pr-2">`;
+                            tempContent += oecPicker(oecData[i].subpart[j].type, oecData[i].subpart[j].size, questionNumber, j)
+                            tempContent += `</div>`;
+                        }
                     }
                 } else {
                     tempContent += `<div class="flex pb-6 pr-2">`;
