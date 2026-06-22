@@ -9,7 +9,11 @@ import { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useRouter } from "next/router";
 import GradeExitBtn from "@/components/Grade/GradeExitBtn";
+<<<<<<< HEAD
 
+=======
+// import config from "@/config";
+>>>>>>> fe-main
 import axios from "axios";
 import QuestionOverlay from "@/components/Grade/QuestionOverlay";
 import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
@@ -86,12 +90,16 @@ export default function Grade() {
       resolvedBoundaries = currentQuestionList[i].topLeftCoordinate ? true : false;
     }
 
-    if (resolvedBoundaries == false && markedData && newCurrentImage) {
+    if (resolvedBoundaries == false && markedData && currentImage) {
       const requestBody = {
-        questions: newCurrentQuestionList,
+        questions: currentQuestionList,
         pageImage: currentImage
       }
+<<<<<<< HEAD
       axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/grade/marking`, requestBody).then(result => {
+=======
+      axios.post(`http://localhost:3001/grade/marking`, requestBody).then(result => {
+>>>>>>> fe-main
 
         const newMarkedData = markedData;
 
@@ -113,7 +121,7 @@ export default function Grade() {
       }).catch((err) => {
         console.log(err);
       });
-    } 
+    }
 
 
   }, [currentQuestionList, currentImage]);
@@ -134,6 +142,7 @@ export default function Grade() {
         correctAnswer={question.correctAnswer}
         questionNumber={question.questionNumber}
         questionText={question.questionText}
+        uuid={question.uuid}
       />
     )
   });
@@ -153,9 +162,16 @@ export default function Grade() {
 
 
   const listQuestionOverlays = currentQuestionList.map((question, index) => {
-    return (
-      <QuestionOverlay question={question} currentImage={currentImage}/>
-    )
+
+    if (question.topLeftCoordinate) {
+      return (
+        <QuestionOverlay question={question} currentImage={currentImage} />
+      )
+    } else {
+      return null;
+    }
+
+
   })
 
   return (
@@ -173,9 +189,9 @@ export default function Grade() {
       <div className={`${styles.mainParent} grid grid-cols-12 p-15`}>
         <div className="col-span-4 max-h-[95vh]">
           <div className={`relative ${styles.quizPageParent}`}>
-          { answerSheetImageArr != null ?
-            <NextImage className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
-            <NextImage className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
+            {answerSheetImageArr != null ?
+              <NextImage className={`${styles.quizPage} col-span-5`} src={answerSheetImageArr[currentPage - 1].dataUrl} width={500} height={1000} alt="quiz" /> :
+              <NextImage className={`${styles.quizPage} col-span-5`} src={null} width={500} height={1000} alt="quiz" />
             }
             {listQuestionOverlays}
             {/* <QuestionOverlay />
