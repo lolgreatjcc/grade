@@ -9,11 +9,7 @@ import { useEffect, useState } from "react";
 import { LayoutGroup, motion } from "motion/react";
 import { useRouter } from "next/router";
 import GradeExitBtn from "@/components/Grade/GradeExitBtn";
-<<<<<<< HEAD
 
-=======
-// import config from "@/config";
->>>>>>> fe-main
 import axios from "axios";
 import QuestionOverlay from "@/components/Grade/QuestionOverlay";
 import { useAnswerSheetStore } from "../../providers/answerSheetStoreProvider";
@@ -95,11 +91,9 @@ export default function Grade() {
         questions: currentQuestionList,
         pageImage: currentImage
       }
-<<<<<<< HEAD
-      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/grade/marking`, requestBody).then(result => {
-=======
+
       axios.post(`http://localhost:3001/grade/marking`, requestBody).then(result => {
->>>>>>> fe-main
+
 
         const newMarkedData = markedData;
 
