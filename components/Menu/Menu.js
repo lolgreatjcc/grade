@@ -30,7 +30,7 @@ export default function Menu() {
     }
     
     return (
-        <div>
+        <div className="select-none">
             { expanded ? 
             <div className={`${styles.menuItemContainer}`}>
                 <div className={`${styles.iconContainer}`}>

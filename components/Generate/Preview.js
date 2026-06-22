@@ -5,7 +5,7 @@ import { pdfToImg } from 'pdftoimg-js/browser';
 import Image from 'next/image';
 import styles from '../../pages/grade/index.module.css'
 
-export default function Preview({numberOfMcqs, numberOfOptions, oecData, previewRef}) {
+export default function Preview({numberOfMcqs, numberOfOptions, oecData, previewRef, institution, subject, year, duration}) {
     const [previewImages, setPreviewImages] = useState([]);
     const [pageIndex, setPageIndex] = useState(0);
     const mcqRef = useRef();
@@ -13,8 +13,8 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
     const options = ["A", "B", "C", "D", "E"];
     const subOption = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
     const roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
-    const lines = [];
-    const box = ["w-28 h-16", "w-50 h-30", "w-100 h-70", "w-150 h-100"];
+    const lines = ["w-70 h-32", 'w-70 h-42', 'w-170 h-32', 'w-170 h-42'];
+    const box = ["w-24 h-13", "w-50 h-30", "w-100 h-70", "w-170 h-100"];
     const columns = 28;
     const rowsPerCol = 10;
 
@@ -31,7 +31,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
         
         await pdf.html(element, {
             html2canvas: {
-                scale: 0.26, // Matches pixels precisely to mm layouts
+                scale: 0.263, // Matches pixels precisely to mm layouts
                 useCORS: true, // Enables rendering for cross-origin assets/images
                 logging: false
             },
@@ -39,7 +39,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
             y: 0,
             width: pageWidth, 
             windowWidth: 794, 
-            autoPaging: 'slice',
+            autoPaging: 'text',
         });
 
         const pdfUrl = pdf.output('datauristring');
@@ -51,9 +51,13 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
         let returnedString = `<div class="pr-2">Q${questionNumber}${(subQuestion !== undefined) ? 
             `(${subOption[subQuestion]})` : ""}${(subPart !== undefined) ? `(${roman[subPart]})` : ""}</div>`
         if (type == 1) {
-            returnedString += `<div class="w-30 h-auto border-b-2 border-black "></div>`;
+            returnedString += `<div class="${lines[size]} border-1 border-black px-2 pb-6">
+                                    <div class="w-full h-12 border-b-1 border-dotted p-2"></div>
+                                    <div class="w-full h-12 border-b-1 border-dotted p-2"></div>
+                                    ${size == 1 || size == 3 ? `<div class="w-full h-12 border-b-1 border-dotted p-2"></div>` : ""}
+                                </div>`;
         } else {
-            returnedString += `<div class="${box[size]} border-2 border-black"></div>`;
+            returnedString += `<div class="${box[size]} border-1 border-black"></div>`;
         }
 
         return returnedString;
@@ -91,10 +95,10 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
 
         // Header of paper
         tempContent += `
-        <h1 class="text-sm text-center font-semibold pt-10">NATIONAL UNIVERSITY OF SINGAPORE</h1>
-        <span class="text-base font-black text-center block">CS2100 - COMPUTER ORGANISATION</span>
-        <h1 class="text-sm text-center">(Semester 1: AY2024/25)</h1>
-        <h1 class="text-sm text-center">Time Allowed: 2 Hours</h1>
+        <h1 class="text-sm text-center font-semibold pt-10">${institution}</h1>
+        <span class="text-base font-black text-center block">${subject}</span>
+        <h1 class="text-sm text-center">${year}</h1>
+        <h1 class="text-sm text-center">${duration}</h1>
         `
 
         // Rendering MCQ
@@ -165,7 +169,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
         
         setContent(tempContent)
 
-    }, [numberOfMcqs, numberOfOptions, oecData])
+    }, [numberOfMcqs, numberOfOptions, oecData, institution, subject, year, duration])
 
     useEffect(() => {
         if (content === "" ) return;
@@ -173,9 +177,9 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
     }, [content])
 
     return (
-        <div className="p-6 flex-1 min-h-0 h-full justify-items-center-safe text-white">
-            <h1 className="text-center max-h-1/10" onClick={htmlToPreview}>Preview</h1>
-            <div className="max-h-8/10 h-full flex justify-center py-3 relative">
+        <div className="flex-1 min-h-0 h-full justify-items-center-safe text-white">
+            <h1 className="text-center max-h-1/12" onClick={htmlToPreview}>Preview</h1>
+            <div className="max-h-10/12 h-full flex justify-center relative">
                 <div className="bg-white max-h-full h-full aspect-5/7 hidden text-black">
                     <div className="max-h-full h-full text-black p-7" ref={previewRef} dangerouslySetInnerHTML={{ __html: content }}/>
                 </div>
@@ -186,7 +190,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
 
                 
             </div>
-            <div className="max-h-1/10 flex items-center justify-center">
+            <div className="max-h-1/12 flex items-center justify-center">
                 <div className={`p-5 ${styles.quizNavigation}`} onClick={handlePageBack}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
                 </div>

@@ -7,6 +7,7 @@ import Oec from "../../components/Generate/Oec";
 import { Ponomar } from "next/font/google";
 import Preview from "../../components/Generate/Preview";
 import jsPDF from "jspdf";
+import Header from "../../components/Generate/Header";
 
 const ponomar = Ponomar({
     subsets: ['latin'],
@@ -19,6 +20,10 @@ export default function Generate() {
     const [numberOfOec, setNumberOfOec] = useState(0);
     const [oecData, setOecData] = useState([]);
     const previewRef = useRef();
+    const [institution, setInstitution] = useState("NATIONAL UNIVERSITY OF SINGAPORE");
+    const [subject, setSubject] = useState("CS2100 - COMPUTER ORGANISATION");
+    const [year, setYear] = useState("(Semester 1: AY2024/25)");
+    const [duration, setDuration] = useState("Time Allowed: 2 Hours");
 
     useEffect(() => {
         console.log(oecData)
@@ -37,7 +42,7 @@ export default function Generate() {
         
         await pdf.html(element, {
             html2canvas: {
-                scale: 0.26, // Matches pixels precisely to mm layouts
+                scale: 0.263, // Matches pixels precisely to mm layouts
                 useCORS: true, // Enables rendering for cross-origin assets/images
                 logging: false
             },
@@ -59,9 +64,19 @@ export default function Generate() {
                 <div className="absolute right-5 top-5">
                     <Menu/>
                 </div>
-                <div className={`grid grid-cols-12 pt-12 pl-12 pr-12 max-h-full h-full flex-1 min-h-0 overflow-hidden`}>
+                <div className={`grid grid-cols-12 pt-12 pl-12 max-h-full h-full flex-1 min-h-0 overflow-hidden`}>
                     <div className={`grid col-span-7 grid-rows-12 h-full max-h-full overflow-auto`}>
                         <div className={`row-span-10 overflow-auto`}>
+                            <Header
+                            institution={institution}
+                            setInstitution={setInstitution}
+                            subject={subject}
+                            setSubject={setSubject}
+                            year={year}
+                            setYear={setYear}
+                            duration={duration}
+                            setDuration={setDuration}
+                            />
                             <Mcq
                             numberOfMcqs={numberOfMcqs}
                             setNumberOfMcqs={setNumberOfMcqs}
@@ -94,6 +109,10 @@ export default function Generate() {
                         numberOfOptions={numberOfOptions}
                         oecData={oecData}
                         previewRef={previewRef}
+                        institution={institution}
+                        year={year}
+                        subject={subject}
+                        duration={duration}
                         />
                     </div>
 
