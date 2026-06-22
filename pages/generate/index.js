@@ -3,7 +3,7 @@ import styles from './index.module.css';
 import React, { useEffect, useRef, useState } from "react";
 import Menu from "@/components/Menu/Menu";
 import Mcq from "../../components/Generate/Mcq";
-import Oec from "../../components/Generate/Oec";
+import Oeq from "../../components/Generate/Oeq";
 import { Ponomar } from "next/font/google";
 import Preview from "../../components/Generate/Preview";
 import jsPDF from "jspdf";
@@ -17,8 +17,8 @@ const ponomar = Ponomar({
 export default function Generate() {
     const [numberOfMcqs, setNumberOfMcqs] = useState(0);
     const [numberOfOptions, setNumberOfOptions] = useState(5);
-    const [numberOfOec, setNumberOfOec] = useState(0);
-    const [oecData, setOecData] = useState([]);
+    const [numberOfOeq, setNumberOfOeq] = useState(0);
+    const [oeqData, setOeqData] = useState([]);
     const previewRef = useRef();
     const [institution, setInstitution] = useState("NATIONAL UNIVERSITY OF SINGAPORE");
     const [subject, setSubject] = useState("CS2100 - COMPUTER ORGANISATION");
@@ -26,34 +26,30 @@ export default function Generate() {
     const [duration, setDuration] = useState("Time Allowed: 2 Hours");
 
     useEffect(() => {
-        console.log(oecData)
-    }, [oecData])
+        console.log(oeqData)
+    }, [oeqData])
 
     const handleGenerateButton = async () => {
         const element = previewRef.current;
         if (!element) return;
-        
-        const pdf = new jsPDF({
-            format: "a4",
-            unit: "mm",
-        });
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
+        const html2pdf = await import('html2pdf.js');
         
-        await pdf.html(element, {
-            html2canvas: {
-                scale: 0.263, // Matches pixels precisely to mm layouts
-                useCORS: true, // Enables rendering for cross-origin assets/images
+        // PDF options
+        const options = {
+            'jsPDF': {
+                format: "a4",
+                unit: "mm",
+            },
+            'html2canvas': {
+                scale: 3, // Increase this to increase resolution
+                useCORS: true, // allow images from other origins
                 logging: false
             },
-            x: 0,
-            y: 0,
-            width: pageWidth, 
-            windowWidth: 794, 
-            autoPaging: 'slice',
-        });
-        
-        pdf.save("generated_answer_sheet.pdf");
+            'pagebreak': { 'mode': ['avoid-all', 'css', 'legacy'] }
+        }
+
+        await html2pdf().set(options).from(element).save();
     }
  
 
@@ -85,12 +81,12 @@ export default function Generate() {
                             />
                         
                             <div className={`h-auto`}>
-                                <Oec
+                                <Oeq
                                 numberOfMcqs={numberOfMcqs}
-                                numberOfOec={numberOfOec}
-                                setNumberOfOec={setNumberOfOec}
-                                oecData={oecData}
-                                setOecData={setOecData}
+                                numberOfOeq={numberOfOeq}
+                                setNumberOfOeq={setNumberOfOeq}
+                                oeqData={oeqData}
+                                setOeqData={setOeqData}
                                 />
                             </div>
                         </div>
@@ -107,7 +103,7 @@ export default function Generate() {
                         <Preview
                         numberOfMcqs={numberOfMcqs}
                         numberOfOptions={numberOfOptions}
-                        oecData={oecData}
+                        oeqData={oeqData}
                         previewRef={previewRef}
                         institution={institution}
                         year={year}

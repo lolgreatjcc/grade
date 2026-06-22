@@ -5,12 +5,13 @@ import { pdfToImg } from 'pdftoimg-js/browser';
 import Image from 'next/image';
 import styles from '../../pages/grade/index.module.css'
 
-export default function Preview({numberOfMcqs, numberOfOptions, oecData, previewRef, institution, subject, year, duration}) {
+export default function Preview({numberOfMcqs, numberOfOptions, oeqData, previewRef, institution, subject, year, duration}) {
     const [previewImages, setPreviewImages] = useState([]);
     const [pageIndex, setPageIndex] = useState(0);
+    const [maxPage, setMaxPage] = useState(0);
     const mcqRef = useRef();
     const [content, setContent] = useState("");
-    const options = ["A", "B", "C", "D", "E"];
+    const options = ["A", "B", "C", "D", "E", "F", "G"];
     const subOption = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
     const roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
     const lines = ["w-70 h-32", 'w-70 h-42', 'w-170 h-32', 'w-170 h-42'];
@@ -21,49 +22,56 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
     const htmlToPreview = async () => {
         const element = previewRef.current;
         if (!element) return;
-        
-        const pdf = new jsPDF({
-            format: "a4",
-            unit: "mm",
-        });
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        
-        await pdf.html(element, {
-            html2canvas: {
-                scale: 0.263, // Matches pixels precisely to mm layouts
-                useCORS: true, // Enables rendering for cross-origin assets/images
+        // import breaks at the top
+        const html2pdf = await import('html2pdf.js'); 
+
+        // PDF options
+        const options = {
+            'jsPDF': {
+                format: "a4",
+                unit: "mm",
+            },
+            'html2canvas': {
+                scale: 3, // Increase this to increase resolution
+                useCORS: true, // allow images from other origins
                 logging: false
             },
-            x: 0,
-            y: 0,
-            width: pageWidth, 
-            windowWidth: 794, 
-            autoPaging: 'text',
-        });
+            'pagebreak': { 'mode': ['avoid-all', 'css', 'legacy'] }
+        }
 
-        const pdfUrl = pdf.output('datauristring');
+        // Convert html to pdf datauri. .outputImg exists but only one image
+        const pdfUrl = await html2pdf().set(options).from(element).outputPdf('datauristring');
+
+        // convert pdf datauri to imageuri
         const previewImages = await pdfToImg(pdfUrl, { 'pages': 'all' });
         setPreviewImages(previewImages)     
     }
 
-    const oecPicker = (type, size, questionNumber, subQuestion, subPart) => {
-        let returnedString = `<div class="pr-2">Q${questionNumber}${(subQuestion !== undefined) ? 
+    // pick between lines and boxes for open ended questions
+    const oeqPicker = (type, size, questionNumber, subQuestion, subPart) => {
+        let returnedString = `<div class="flex pb-6 pr-2">`;
+
+        // render question number
+        returnedString += `<div class="pr-2">Q${questionNumber}${(subQuestion !== undefined) ? 
             `(${subOption[subQuestion]})` : ""}${(subPart !== undefined) ? `(${roman[subPart]})` : ""}</div>`
+        // type == 1 is lines, size 1 & 3 have extra lines
         if (type == 1) {
             returnedString += `<div class="${lines[size]} border-1 border-black px-2 pb-6">
                                     <div class="w-full h-12 border-b-1 border-dotted p-2"></div>
                                     <div class="w-full h-12 border-b-1 border-dotted p-2"></div>
                                     ${size == 1 || size == 3 ? `<div class="w-full h-12 border-b-1 border-dotted p-2"></div>` : ""}
                                 </div>`;
-        } else {
-            returnedString += `<div class="${box[size]} border-1 border-black"></div>`;
+        } else { // type == 2, is box
+            returnedString += `<div class="${box[size]} border-1 border-black block break-inside-avoid-page"></div>`;
         }
+        returnedString += `</div>`;
 
         return returnedString;
 
     }
 
+    // Header above and below mcq boxes (Q A B C D E ...)
     const renderMcqHeader = (options, length, gridCols, numberOfCols, hideQ) => {
         // set up number of grids
         let tempHeader = `<div class="flex align-center grid ${gridCols} gap-1">`;
@@ -73,7 +81,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
             if (col === 0 && hideQ !== true) tempHeader += `<h1 class="text-xs col-span-2 text-center">Q</h1>`
             else tempHeader += `<h1 class="text-xs col-span-2 text-center"></h1>`
 
-            // show options in header
+            // show options (A, B, C, ...) in header
             for (let i = 0; i < length; i++) {
                 tempHeader += `<div class="flex align-center col-span-1 justify-center"><text class="text-xs text-center">${options[i]}</text></div>`
             }
@@ -110,16 +118,16 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
             
             // MCQ box
             tempContent += `<div class='w-full border-1 my-3 pb-3 px-2'>`;
-            const gridCols = `grid-cols-${columns}`;
-            const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol)
+            const gridCols = `grid-cols-${columns}`; //hardcoded to 28 for now
+            const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol) // calculate num of sets of columns
             tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol);
-            for (let i = 0; i < rowsPerCol; i++ ) {
+            for (let i = 0; i < rowsPerCol; i++ ) { // for each row (Q1, Q11, Q21, Q31, then Q2, Q12, Q22, Q32, etc)
                 tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1 ${i + 1 == rowsPerCol ? "" : "mb-1"}">`
-                for (let col = 0; col < requiredCol; col++) {
+                for (let col = 0; col < requiredCol; col++) { // for each set of columns
                     const questionNumber = i + 1 + col * rowsPerCol;
-                    if (questionNumber <= numberOfMcqs) {
+                    if (questionNumber <= numberOfMcqs) { // only render if question exists
                         tempContent += `<h1 class="text-xs col-span-2 text-center align-middle">${questionNumber}</h1>`
-                        for (let i = 0; i < numberOfOptions; i++) {
+                        for (let i = 0; i < numberOfOptions; i++) { // render options (A, B, C, D, ...)
                             tempContent += `<div class="border-1 col-span-1 aspect-square rounded-full self-center"></div>`
                         }
                     }
@@ -127,54 +135,68 @@ export default function Preview({numberOfMcqs, numberOfOptions, oecData, preview
                 }
                 tempContent += "</div>";
             }
+            // Render (A, B, C, D...) at the bottom, after all the bubbles
             tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol, true);
             tempContent += "</div>";
         }
 
-
-        if (oecData.length > 0) {
-            const numberOfOecs = oecData.length;
+        // Open Ended
+        if (oeqData.length > 0) {
+            const numberOfQuestions = oeqData.length;
+            
+            // if there are no MCQs, render divider between header and Open Ended
             if (numberOfMcqs === 0) tempContent += `<div class="w-full border-1 my-4"></div>`;
             tempContent += `<text class="text-base font-bold block">Part B: Open Ended Questions</text>`
-            tempContent += `<text>Write your answers within the boxes provided</text>`
-            tempContent += `<div class="min-w-full flex flex-wrap mt-4">`;
+            tempContent += `<h1 class="pb-1">Write your answers within the boxes provided</h1>`
 
-            for (let i = 0; i < numberOfOecs; i++) {
+            for (let i = 0; i < numberOfQuestions; i++) { // For each question
                 const questionNumber = numberOfMcqs + i + 1;
-                const subQuestionLength = oecData[i].subpart.length;
-                if (subQuestionLength > 0) {
+                const subQuestionLength = oeqData[i].subpart.length; // Check if sub question exist (a, b, c, ...)
+
+                // putting questions with the same main question number together for auto paging
+                tempContent += `<div class="block"><div class="flex flex-wrap">`
+                if (subQuestionLength > 0) { // if subQuestions exists
                     for (let j = 0; j < subQuestionLength; j++) {
-                        const subpartLength = oecData[i].subpart[j].subpart.length;
-                        if (subpartLength > 0) {
-                            for (let k = 0; k < subpartLength; k++) {
-                                tempContent += `<div class="flex pb-6 pr-2">`;
-                                tempContent += oecPicker(oecData[i].subpart[j].subpart[k].type, oecData[i].subpart[j].subpart[k].size, questionNumber, j, k)
-                                tempContent += `</div>`;
+                        const subpartLength = oeqData[i].subpart[j].subpart.length; // Check if sub parts exist
+                        if (subpartLength > 0) { // if there are sub parts (i, ii, iii, ...)
+                            for (let k = 0; k < subpartLength; k++) { 
+                                // rendering for sub part (i, ii, iii, ...)
+                                tempContent += oeqPicker(oeqData[i].subpart[j].subpart[k].type, oeqData[i].subpart[j].subpart[k].size, questionNumber, j, k);
                             }
                         } else {
-                            tempContent += `<div class="flex pb-6 pr-2">`;
-                            tempContent += oecPicker(oecData[i].subpart[j].type, oecData[i].subpart[j].size, questionNumber, j)
-                            tempContent += `</div>`;
+                            // rendering for sub question (a, b, c, ...)
+                            tempContent += oeqPicker(oeqData[i].subpart[j].type, oeqData[i].subpart[j].size, questionNumber, j);
                         }
                     }
                 } else {
-                    tempContent += `<div class="flex pb-6 pr-2">`;
-                    tempContent += oecPicker(oecData[i].type, oecData[i].size, questionNumber);
-                    tempContent += `</div>`;
+                    // rendering for main question
+                    tempContent += oeqPicker(oeqData[i].type, oeqData[i].size, questionNumber);
                 }
+                tempContent += `</div></div>`
                 
             }
-            tempContent += `</div>`;
         }
-        
+        // setting content to be generated
         setContent(tempContent)
 
-    }, [numberOfMcqs, numberOfOptions, oecData, institution, subject, year, duration])
+    }, [numberOfMcqs, numberOfOptions, oeqData, institution, subject, year, duration])
 
+    // render preview upon content update (Headers, MCQ, Open Ended)
     useEffect(() => {
-        if (content === "" ) return;
+        if (content === "") return;
         htmlToPreview();
     }, [content])
+
+    // Update max page on preview update
+    useEffect(() => {
+        setMaxPage(previewImages.length);
+    }, [previewImages])
+
+    // Change current page if current page is bigger than max page
+    useEffect(() => {
+        if (maxPage === 0) return;
+        if (pageIndex + 1 > maxPage) setPageIndex(maxPage - 1);
+    }, [maxPage])
 
     return (
         <div className="flex-1 min-h-0 h-full justify-items-center-safe text-white">

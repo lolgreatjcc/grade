@@ -2,73 +2,87 @@ import styles from "./Options.module.css";
 
 const roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
 const subOption = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+const subpartMax = 10;
 
+// for sub question (level 2), converting number to roman
+const convertIntToSubQuestion = (num) => {
+    if (num >= 1&& num <= 10) return subOption[num - 1];
+    else return subOption[0];
+}
+
+// for sub part (level 3), converting number to roman
 const convertIntToRoman = (num) => {
     if (num >= 1&& num <= 10) return roman[num - 1];
     else return roman[0];
 }
 
-const convertIntToSubpart = (num) => {
-    if (num >= 1&& num <= 10) return subOption[num - 1];
-    else return subOption[0];
-}
-
-const isSubQuestion = (level) => {
-    if (level === 2) return true;
-    else return false;
-}
-
-const isSubPart = (level) => {
-    if (level === 3) return true;
-    else return false;
-}
-
+// check if question is a main question (level 1)
 const isQuestion = (level) => {
     if (level === 1) return true;
     else return false;
 }
 
-export default function OecQuestion({numberOfMcqs, numberOfOec, oecData, setOecData, editOecData, level, questionIndex, subQuestionIndex, parentData}) {
+// check if question is a sub question (level 2)
+const isSubQuestion = (level) => {
+    if (level === 2) return true;
+    else return false;
+}
+
+// check if question is a sub part (level 3)
+const isSubPart = (level) => {
+    if (level === 3) return true;
+    else return false;
+}
+
+export default function OeqQuestion({numberOfMcqs, numberOfOeq, oeqData, setOeqData, editOeqData, level, questionIndex, subQuestionIndex, parentData}) {
+    // update size of question
     const handleSizeUpdate = (index, event) => {
-        const tempArr = isSubQuestion(level)|| isSubPart(level) ? [...parentData] : [...oecData];
+        // if main question use oeqData, if not main question get oeqData stored in parentData
+        const tempArr = isQuestion(level) ? [...oeqData] : [...parentData];
         const newSize = parseInt(event.target.value);
 
+        // depending on level, go deeper to update size
         if (isSubQuestion(level)) tempArr[questionIndex].subpart[index].size = newSize;
         else if (isSubPart(level)) tempArr[questionIndex].subpart[subQuestionIndex].subpart[index].size = newSize; 
         else tempArr[index].size = newSize;
-        setOecData(tempArr);
+        setOeqData(tempArr);
     };
 
     const handleTypeUpdate = (index, type) => {
-        const tempArr =  !isQuestion(level) ? [...parentData] : [...oecData];
+        // if main question use oeqData, if not main question get oeqData stored in parentData
+        const tempArr = isQuestion(level) ? [...oeqData] : [...parentData];
         
+        // depending on level, go deeper to update type
         if (isSubQuestion(level)) tempArr[questionIndex].subpart[index].type = type;
         else if (isSubPart(level)) tempArr[questionIndex].subpart[subQuestionIndex].subpart[index].type = type; 
         else tempArr[index].type = type;
-        setOecData(tempArr);
+        setOeqData(tempArr);
     }
 
+    // function to add sub questions (a, b, c, ...)
     const addSubQuestion = (questionIndex) => {
-        const subpartLength = oecData[questionIndex].subpart.length;
-        if (subpartLength < 10) {
-            const tempArr =  isSubQuestion(level) ? [...parentData] : [...oecData];
-            tempArr[questionIndex].subpart = editOecData(subpartLength, subpartLength + 1, oecData[questionIndex].subpart, 2);
-            setOecData(tempArr)
+        const subpartLength = oeqData[questionIndex].subpart.length;
+        if (subpartLength < subpartMax) { // this limit can be changed or removed. for now I decided to limit
+            const tempArr =  isSubQuestion(level) ? [...parentData] : [...oeqData]; // should always be subQuestion
+            tempArr[questionIndex].subpart = editOeqData(subpartLength, subpartLength + 1, oeqData[questionIndex].subpart, 2);
+            setOeqData(tempArr)
         }
     }
 
+    // function to add sub part (a, b, c, ...)
     const addSubPart = (index) => {
         const subpartLength = parentData[questionIndex].subpart[index].subpart.length;
-
-        if (subpartLength < 10) {
+        if (subpartLength < subpartMax) { // this limit can be changed or removed. for now I decided to limit
             const tempArr =  [...parentData];
             console.log(tempArr[questionIndex].subpart[index]);
-            tempArr[questionIndex].subpart[index].subpart = editOecData(subpartLength, subpartLength + 1, tempArr[questionIndex].subpart[index].subpart, 3);
-            setOecData(tempArr)
+            tempArr[questionIndex].subpart[index].subpart = editOeqData(subpartLength, subpartLength + 1, tempArr[questionIndex].subpart[index].subpart, 3);
+            setOeqData(tempArr)
         }
     }
 
-    const oecQuestions = (index, questionData) => {
+    // function to render the questions and its options
+    const oeqQuestions = (index, questionData) => {
+        // questionIndex is the main question's index, if not main question then get encapsulating parent question's index via questionIndex
         const questionNumber = numberOfMcqs + 1 + (!isQuestion(level) ? questionIndex : index) ;
         const subpartNumber = index + 1;
         return (
@@ -77,8 +91,8 @@ export default function OecQuestion({numberOfMcqs, numberOfOec, oecData, setOecD
             {questionData.subpart.length === 0 ?  <div className={`grid grid-cols-10 gap-1 mb-4`}>
                 <div className="col-span-4">
                     <h1 className={`text-xl`}>Type for Q{questionNumber}
-                        {isSubQuestion(level) && `(${convertIntToSubpart(subpartNumber)})`}
-                        {isSubPart(level) && `(${convertIntToSubpart(subQuestionIndex + 1)})(${convertIntToRoman(subpartNumber)})`}</h1>
+                        {isSubQuestion(level) && `(${convertIntToSubQuestion(subpartNumber)})`}
+                        {isSubPart(level) && `(${convertIntToSubQuestion(subQuestionIndex + 1)})(${convertIntToRoman(subpartNumber)})`}</h1>
                 </div>
                 <div className={`col-span-3 flex`}>
                     <h1 className={`text-xl cursor-pointer pr-2 
@@ -105,15 +119,15 @@ export default function OecQuestion({numberOfMcqs, numberOfOec, oecData, setOecD
                     </select>
                 </div>
                 </div> 
-                : <OecQuestion 
+                : <OeqQuestion 
                 numberOfMcqs={numberOfMcqs}
-                numberOfOec={questionData.subpart.length}
-                oecData={questionData.subpart}
-                setOecData={setOecData}
-                editOecData={editOecData}
+                numberOfOeq={questionData.subpart.length}
+                oeqData={questionData.subpart}
+                setOeqData={setOeqData}
+                editOeqData={editOeqData}
                 questionIndex={isQuestion(level) ? index : questionIndex}
                 subQuestionIndex={index}
-                parentData={parentData || oecData}
+                parentData={parentData || oeqData}
                 level={level + 1}
                 /> 
                 }
@@ -122,7 +136,7 @@ export default function OecQuestion({numberOfMcqs, numberOfOec, oecData, setOecD
                     <div className={`w-3/4 text-center px-2 py-3 rounded border-1 ${questionData.subpart.length < 10 ? "cursor-pointer" : "cursor-not-allowed text-stone-400"} hover:text-stone-400`} 
                     onClick={() => isSubQuestion(level) ? addSubPart(index) : addSubQuestion(index)}>
                         {level == 1 && <h1 className={`text-xl mr-5`}>+ Sub-Question for Q{questionNumber}</h1>}
-                        {level == 2 && <h1 className={`text-xl mr-5`}>+ Sub-Part for Q{questionNumber}({convertIntToSubpart(subpartNumber)})</h1>}
+                        {level == 2 && <h1 className={`text-xl mr-5`}>+ Sub-Part for Q{questionNumber}({convertIntToSubQuestion(subpartNumber)})</h1>}
                     </div>
                     
                 </div>}
@@ -134,9 +148,9 @@ export default function OecQuestion({numberOfMcqs, numberOfOec, oecData, setOecD
     return (
         <div className={`pl-5`}>
             <div className={``}>
-                {oecData.map((questionData, index) => {
+                {oeqData.map((questionData, index) => {
                 return (
-                    oecQuestions(index, questionData)
+                    oeqQuestions(index, questionData)
                 )
             })}
             </div>
