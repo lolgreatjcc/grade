@@ -20,11 +20,13 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Change directory to /tests
-        run: cd tests && node endpoint-test.js
+      # - name: Change directory to /tests
+      #   run: cd tests
 
       # - name: List directory
       #   run: ls
+      
 
-      # - name: Run Backend Unit Tests
-      #   run: node endpoint-test.js
+      - name: Run Backend Unit Tests
+        working-directory: ./tests
+        run: node endpoint-test.js
