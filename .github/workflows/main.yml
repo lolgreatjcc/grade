@@ -2,7 +2,6 @@ name: Setup Backend Environment
 
 on:
   push:
-    branches: be-main
 
 jobs:
   build:
@@ -10,8 +9,6 @@ jobs:
     steps:
       - name: Checkout backend branch
         uses: actions/checkout@v7
-        with:
-          ref: be-main
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6.4.0
