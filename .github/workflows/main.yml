@@ -4,8 +4,8 @@ on:
   push:
 
 jobs:
-  build:
-    name: Build Backend Envionment
+  backend_test:
+    name: Run Backend Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout backend branch
@@ -20,5 +20,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Echo complete
-        run: echo "Backend Environment Setup Completed"
+      - name: Change directory to /tests
+        run: cd tests
+
+      - name: Run Backend Unit Tests
+        run: node endpoint-tests
