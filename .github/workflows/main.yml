@@ -3,6 +3,11 @@ name: Test Backend Environment
 on:
   push:
 
+env:
+    DB_IGNORED: ${{ vars.DB_IGNORED }}
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+
 jobs:
   backend_test:
     name: Run Backend Tests
