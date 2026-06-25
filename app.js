@@ -4,10 +4,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const dotenv = require('dotenv');
+const path = require('path');
+
 if (process.env.NODE_ENV === 'staging') {
-  require('dotenv').config({ path: `./.env_staging` });
+  require('dotenv').config({ path: path.resolve(__direname, '.env_staging') });
 } else {
-  require('dotenv').config({ path: `./.env` });
+  require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 }
 
 const port = process.env.PORT || 3001;
