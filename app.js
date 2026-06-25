@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'staging') {
 
 const port = process.env.PORT || 3001;
 
-const jsonParser = bodyParser.json({ limit: '10mb'});
+const jsonParser = bodyParser.json({ limit: '10mb' });
 
 //app.options('*', cors());
 app.use(cors());
@@ -29,6 +29,10 @@ app.get('/', (req, res) => {
   res.send("elp, im in orbit");
 });
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`App listening on port ${port}`);
+  });
+}
+
+module.exports = app;
