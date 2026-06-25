@@ -1,10 +1,11 @@
-name: Setup Backend Environment
+name: Test Backend Environment
 
 on:
   push:
 
 jobs:
   build:
+    name: Build Backend Envionment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout backend branch
