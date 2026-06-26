@@ -126,6 +126,7 @@ router.post('/grade',(req, res) => {
         if (err instanceof multer.MulterError) {
             res.status(400).send({'message':'One or more files ran into an issue. EC_41'});
         } else if (err) { // other errors (42)
+          console.log(err);
             res.status(400).send({'message':'An unexpected error occured. EC_42'});
         } else {
             // receive both files
@@ -144,7 +145,9 @@ router.post('/grade',(req, res) => {
                 return;
             }
 
-            if (req.body.user_id !== "undefined" & req.body.user_id !== null) {
+
+            if (req.body.user_id !== undefined && req.body.user_id !== null) {
+              console.log('testing');
                 verifyBodyUserId(req, res);
             };            
            
