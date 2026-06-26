@@ -23,10 +23,12 @@ app.use(jsonParser);
 //import controllers
 const grade = require('./controller/grade.js');
 const auth = require('./controller/auth.js');
+const sheetGen = require('./controller/sheetGen.js')
 
 //use controllers
 app.use(grade);
 app.use(auth);
+app.use(sheetGen);
 app.get('/', (req, res) => {
   res.send("elp, im in orbit");
 });
