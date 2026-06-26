@@ -21,8 +21,6 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
 
     const htmlToPreview = async () => {
         const element = previewRef.current;
-        console.log(typeof element);
-        console.log(element)
         if (!element) return;
 
         // import breaks at the top
