@@ -21,6 +21,8 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
 
     const htmlToPreview = async () => {
         const element = previewRef.current;
+        console.log(typeof element);
+        console.log(element)
         if (!element) return;
 
         // import breaks at the top
@@ -74,7 +76,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     // Header above and below mcq boxes (Q A B C D E ...)
     const renderMcqHeader = (options, length, gridCols, numberOfCols, hideQ) => {
         // set up number of grids
-        let tempHeader = `<div class="flex align-center grid ${gridCols} gap-1">`;
+        let tempHeader = `<div class="flex align-center grid ${gridCols} gap-1 ${hideQ !== true ? "pb-3" : ""}">`;
         
         for (let col = 0; col < numberOfCols; col++) {
             // show "Q" only on the first column
