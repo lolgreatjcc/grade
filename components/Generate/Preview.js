@@ -122,7 +122,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
             const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol) // calculate num of sets of columns
             tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol);
             for (let i = 0; i < rowsPerCol; i++ ) { // for each row (Q1, Q11, Q21, Q31, then Q2, Q12, Q22, Q32, etc)
-                tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1 ${i + 1 == rowsPerCol ? "" : ""}">`
+                tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1">`
                 for (let col = 0; col < requiredCol; col++) { // for each set of columns
                     const questionNumber = i + 1 + col * rowsPerCol;
                     if (questionNumber <= numberOfMcqs) { // only render if question exists
