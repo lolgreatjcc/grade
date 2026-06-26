@@ -67,6 +67,7 @@ export default function Grade() {
   // Fix with uuid...
   useEffect(() => {
     let newCurrentQuestionList = [];
+    if (markedData === null) return;
     for (let i = 0; i < markedData.questions.length; i++) {
       if (markedData.questions[i].questionPage == currentPage) {
         newCurrentQuestionList.push(markedData.questions[i]);
