@@ -43,3 +43,10 @@ request(app)
   .expect(200)
   .end((err, res) => baseErrorFn(err, res, "Passed: '/grade/marking'"));
 
+
+request(app)
+  .post('/sheetGen')
+  .attach('file', files[0])
+  .expect(200)
+  .end((err, res) => baseErrorFn(err,res, "Passed: '/sheetGen"));
+
