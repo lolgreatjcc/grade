@@ -92,7 +92,7 @@ export default function Grade() {
         pageImage: currentImage
       }
 
-      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/marking`, requestBody).then(result => {
+      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/grade/marking`, requestBody).then(result => {
 
 
         const newMarkedData = markedData;
