@@ -74,7 +74,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     // Header above and below mcq boxes (Q A B C D E ...)
     const renderMcqHeader = (options, length, gridCols, numberOfCols, hideQ) => {
         // set up number of grids
-        let tempHeader = `<div class="flex align-center grid ${gridCols} gap-1 ${hideQ !== true ? "pb-3" : ""}">`;
+        let tempHeader = `<div class="flex align-center grid ${gridCols} gap-1 ${hideQ !== true ? "pb-3" : "pt-3"}">`;
         
         for (let col = 0; col < numberOfCols; col++) {
             // show "Q" only on the first column
@@ -122,7 +122,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
             const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol) // calculate num of sets of columns
             tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol);
             for (let i = 0; i < rowsPerCol; i++ ) { // for each row (Q1, Q11, Q21, Q31, then Q2, Q12, Q22, Q32, etc)
-                tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1 ${i + 1 == rowsPerCol ? "" : "mb-1"}">`
+                tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1 ${i + 1 == rowsPerCol ? "" : ""}">`
                 for (let col = 0; col < requiredCol; col++) { // for each set of columns
                     const questionNumber = i + 1 + col * rowsPerCol;
                     if (questionNumber <= numberOfMcqs) { // only render if question exists
