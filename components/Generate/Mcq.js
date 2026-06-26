@@ -18,7 +18,7 @@ export default function Mcq({numberOfMcqs, setNumberOfMcqs, numberOfOptions, set
             <h1 className={`text-2xl font-bold pb-2 text-white`}>Part A</h1>
             <div className={`flex`}>
                 <h1 className={`pr-5 text-2xl text-white`}>Number of MCQs</h1>
-                <input min={0} max={numberOfOptions > 5 ? 30 : 40} defaultValue={0} className={`text-2xl w-20 focus:outline-hidden border-white border-b-3 text-white text-center`} onBlur={handleNumberOfMcqs} type="number"></input>
+                <input min={0} max={numberOfOptions > 5 ? 30 : 40} defaultValue={0} className={`text-2xl w-20 focus:outline-hidden border-white border-b-3 text-white text-center`} onChange={handleNumberOfMcqs} value={numberOfMcqs} type="number"></input>
             </div>
             <McqOptions
             numberOfOptions = {numberOfOptions}
