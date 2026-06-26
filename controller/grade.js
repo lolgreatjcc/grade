@@ -146,7 +146,7 @@ router.post('/grade',(req, res) => {
             }
 
 
-            if (req.body.user_id !== undefined && req.body.user_id !== null) {
+            if (req.body.user_id !== "undefined" && req.body.user_id !== null) {
               console.log('testing');
                 verifyBodyUserId(req, res);
             };            
