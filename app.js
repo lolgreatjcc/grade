@@ -6,6 +6,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 
+
+// Dynamically changes server state and variables based on development and production.
 if (process.env.NODE_ENV === 'staging') {
   require('dotenv').config({ path: path.resolve(__direname, '.env_staging') });
 } else {
@@ -14,9 +16,9 @@ if (process.env.NODE_ENV === 'staging') {
 
 const port = process.env.PORT || 3001;
 
+// Parses json if present automatically
 const jsonParser = bodyParser.json({ limit: '10mb' });
 
-//app.options('*', cors());
 app.use(cors());
 app.use(jsonParser);
 
@@ -33,6 +35,9 @@ app.get('/', (req, res) => {
   res.send("elp, im in orbit");
 });
 
+// Only starts up a 'listening' server if the app.js is run directly.
+// Relevant for unit tests (see /tests/endpoint-test.js) 
+// as unit tests needs app.js but we don't want to run a 'listening' server when app.js is imported.
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`App listening on port ${port}`);
