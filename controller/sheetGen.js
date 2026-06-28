@@ -5,16 +5,11 @@ const uuid = require('fix-esm').require("uuid");
 const uuidv7 = uuid.v7;
 const path = require('path');
 const openAIFileUpload = require('./openAI/openAIFileUpload');
+const openAISheetGenBufferUpload = require('./openAI/openAISheetGenBufferUpload');
 const findQuestionNumbers = require('./sheetGenUtils/findQuestionNumbers');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './mediaUploadTemp/')
-  },
-  filename: (req, file, cb) => {
-    cb(null, uuidv7() + path.extname(file.originalname))
-  }
-})
+const storage = multer.memoryStorage();
+
 const upload = multer({
   'storage': storage,
   'limits': {
@@ -29,8 +24,10 @@ const upload = multer({
 router.post('/sheetGen', upload.single('file'), async (req, res) => {
 
   const inputQnSheetFile = req.file;
+  const inputQnSheetName = `${uuidv7()}.pdf`;
+
   // upload to openai api
-  const uploadedQnSheetFile = await openAIFileUpload(inputQnSheetFile.filename);
+  const uploadedQnSheetFile = await openAISheetGenBufferUpload(inputQnSheetFile.buffer, inputQnSheetName);
 
   // use uploaded file for openai request
   const qnData = await findQuestionNumbers(uploadedQnSheetFile.id);

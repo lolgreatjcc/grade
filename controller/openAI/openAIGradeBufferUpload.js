@@ -1,9 +1,7 @@
 ﻿const fs = require('fs');
 const openaiClient = require('./openaiClient');
 const { toFile } = require('openai')
-
-// Uploads answerSheets and answerKeys to OpenAI using buffer.
-const openAIBufferUpload = async (answerSheetBuffer, answerSheetName, answerKeyBuffer, answerKeyName) => {
+const openAIGradeBufferUpload = async (answerSheetBuffer, answerSheetName, answerKeyBuffer, answerKeyName) => {
   const answerSheet = await toFile(answerSheetBuffer, answerSheetName, { type: 'application/pdf' });
   const answerSheetFile = await openaiClient.files.create({
     file: answerSheet,
@@ -22,4 +20,4 @@ const openAIBufferUpload = async (answerSheetBuffer, answerSheetName, answerKeyB
   }
 }
 
-module.exports = openAIBufferUpload;
+module.exports = openAIGradeBufferUpload;
