@@ -30,6 +30,7 @@ const openAIFileUpload = require('./openAI/openAIFileUpload');
 const findBoundaries = require('./gradeUtils/findBoundaries');
 const splitQuestionsBuffer = require('./gradeUtils/splitQuestionsBuffer');
 
+// deprecated, can use this to select between buffer or disk storage
 const storageSelectorByEnv = (env) => {
     if (env === 'staging') {
         // using memory buffer for azure
@@ -47,7 +48,8 @@ const storageSelectorByEnv = (env) => {
     }
 }
 
-const storage = storageSelectorByEnv(process.env.NODE_ENV);
+// using buffer
+const storage = multer.memoryStorage();
 
 const upload = multer({
     'storage': storage, 
@@ -153,42 +155,30 @@ router.post('/grade',(req, res) => {
            
             // file upload to azure (if applicable) and save to db
             let userId = (req.body.user_id === null || req.body.user_id === "undefined") ? '019e555d-94ed-7336-ba9f-2b0622f5370f' : req.body.user_id; //dummy value for now
-            if (process.env.NODE_ENV === 'staging') {
-                // Creating uuid names for azure
-                let answerKeyId = uuidv7();
-                let answerKeyFileName = `${answerKeyId}.pdf`;
-                answerKey.filename = answerKeyFileName;
+            
+            // Creating uuid names for azure
+            let answerKeyId = uuidv7();
+            let answerKeyFileName = `${answerKeyId}.pdf`;
+            answerKey.filename = answerKeyFileName;
 
-                let attemptId = uuidv7();
-                let attemptFileName = `${attemptId}.pdf`;
-                answerSheet.filename = attemptFileName;
-                // upload into azure storage
-                //const shareName = process.env.AZUREFILESHARENAME;
-                //const directory = process.env.AZUREFILEDIRECTORY;
-                //await azureFileUpload(shareServiceClient, shareName, directory, files[0].buffer, attemptFileName);
-                //await azureFileUpload(shareServiceClient, shareName, directory, files[1].buffer, answerKeyFileName);
-                //saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
-            } else {
-                // local implementation (multer configured to generate uuid names)
-                let answerKeyId = path.basename(files[0].filename, '.pdf');
-                let answerKeyFileName = files[0].filename;
-                let attemptId = path.basename(files[1].filename, '.pdf');
-                let attemptFileName = files[1].filename;
-                //saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
-            }
+            let attemptId = uuidv7();
+            let attemptFileName = `${attemptId}.pdf`;
+            answerSheet.filename = attemptFileName;
+
+            // upload into azure storage
+            //const shareName = process.env.AZUREFILESHARENAME;
+            //const directory = process.env.AZUREFILEDIRECTORY;
+            //await azureFileUpload(shareServiceClient, shareName, directory, files[0].buffer, attemptFileName);
+            //await azureFileUpload(shareServiceClient, shareName, directory, files[1].buffer, answerKeyFileName);
+            //saveAnsFilesToDb(answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res);
+            
 
             // process answer sheet and answer key
             try {
                 const markedImages = await mcqMarker(answerSheet, answerKey);
-                let response = undefined;
-              
-                if (process.env.NODE_ENV == 'staging') {
-                  response = await splitQuestionsBuffer(files[0].buffer, markedImages.answerSheetFilename, files[1].buffer, markedImages.answerKeyFilename);
-                } else {
-                  response = await splitQuestions(markedImages.answerSheetFilename, markedImages.answerKeyFilename);
-                }
-              
+                let response = await splitQuestionsBuffer(files[0].buffer, markedImages.answerSheetFilename, files[1].buffer, markedImages.answerKeyFilename);
                 let splitQuestionsData = JSON.parse(response.output_text);
+
                 for (let i = 0; i < splitQuestionsData.questions.length; i++) {
                   splitQuestionsData.questions[i].uuid = uuidv7();
                 }
