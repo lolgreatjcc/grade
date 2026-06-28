@@ -6,10 +6,12 @@ export default function AnswerSheetButton({handleFile, setAnswerSheet}) {
   const [fileStatus, setFileStatus] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
+  // Runs handle file found in the landing index.js
   const handleAnswerSheet = async (event) => {
     setFileStatus( await handleFile(event, setAnswerSheet, setPreviewImage));
   }
 
+  // Displays green/red tinge on input based on validity of uploaded file.
   const showFileStatus = (fileStatus) => {
     return fileStatus == null ? '' : fileStatus == true ? styles.overlayContainerFileSuccess : styles.overlayContainerFileFail;
   }

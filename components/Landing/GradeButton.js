@@ -24,6 +24,8 @@ export default function GradeButton({ answerSheet, answerKey }) {
   const setAnswerSheetImageArr = useAnswerSheetStore((state) => state.setAnswerSheetImageArr);
   const router = useRouter();
 
+
+  // Submits answer sheet and answer key to back-end. 
   async function grade(event) {
     event.preventDefault()
     if (answerSheet == null || answerKey == null || loading) {
@@ -51,8 +53,8 @@ export default function GradeButton({ answerSheet, answerKey }) {
     })
   }
 
+  // Redirects user once data from back-end is saved to store.
   useEffect(() => {
-    console.log(answerSheetImageArr)
     if (answerSheetImageArr != null) {
       router.push('/grade');
     }
