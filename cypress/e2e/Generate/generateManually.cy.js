@@ -6,7 +6,10 @@ describe('generateManually', () => {
     // Redirects user to /generate page from the landing page.
     cy.visit('http://localhost:3000')
     cy.get('#__next svg[stroke="#ffffff"]').click();
+    cy.wait(1000)
     cy.get('#__next div.m-3 h1.menu-module__noSqeG__menuItemText').click();
+    cy.get('#__next h1.GenerateOverlay-module__JwmcTG__overlayManuallyText').click();
+    
     
     // Checks if all uneditable components are present and visible.
     cy.get('#__next div.pr-4 h1.font-bold').should('be.visible');
@@ -25,7 +28,6 @@ describe('generateManually', () => {
     cy.get('#__next div.items-center div:nth-child(1) svg').should('be.visible');
     cy.get('#__next div.index-module__-A4s8q__generateButton').should('be.visible');
     
-    cy.get('#__next h1.GenerateOverlay-module__JwmcTG__overlayManuallyText').click();
     
     // Asserts current preview
     cy.wait(200);
