@@ -1,6 +1,8 @@
 ﻿const fs = require('fs');
 const openaiClient = require('./openaiClient');
 
+
+// Uploads answerSheets and answerKeys to OpenAI using file inside mediaUploadTemp
 const openAIGradeFileUpload = async (answerSheetFileName, answerKeyFileName) => {
   const answerSheetFile = await openaiClient.files.create({
     file: fs.createReadStream(`mediaUploadTemp/${answerSheetFileName}`),
