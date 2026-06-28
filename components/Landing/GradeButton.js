@@ -61,7 +61,7 @@ export default function GradeButton({ answerSheet, answerKey }) {
   }, [answerSheetImageArr])
 
   return (
-    <div className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>
+    <button className={`${styles.gradeButton} px-20 py-4 rounded-sm`} onClick={grade}>
       {loading ?
         <div className={`${styles.loadingParent}`}>
 
@@ -86,6 +86,6 @@ export default function GradeButton({ answerSheet, answerKey }) {
         :
         <h2 className={`${ponomar.className} text-2xl ${styles.gradeButtonText}`}>grade</h2>
       }
-    </div>
+    </button>
   )
 }
