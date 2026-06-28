@@ -30,6 +30,8 @@ const openAIFileUpload = require('./openAI/openAIFileUpload');
 const findBoundaries = require('./gradeUtils/findBoundaries');
 const splitQuestionsBuffer = require('./gradeUtils/splitQuestionsBuffer');
 
+
+// Decides where files get stored based on mode.
 const storageSelectorByEnv = (env) => {
     if (env === 'staging') {
         // using memory buffer for azure
@@ -49,6 +51,7 @@ const storageSelectorByEnv = (env) => {
 
 const storage = storageSelectorByEnv(process.env.NODE_ENV);
 
+
 const upload = multer({
     'storage': storage, 
     'limits': {
@@ -58,7 +61,7 @@ const upload = multer({
 }).array('files', 2);
 
 
-// functions
+// Checks extension of accepted files (used on /grade endpoint)
 const checkExtension = (files, acceptedExt) => {
     let valid = true;
     for (let i = 0; i < files.length; i++) {
@@ -82,6 +85,7 @@ const azureFileUpload = async (serviceClient, shareName, directoryName, content,
     console.log(`Uploaded file range to ${fileName} successfully`);
 }
 
+// function to saves files to DB. 
 const saveAnsFilesToDb = (answerKeyId, answerKeyFileName, attemptId, attemptFileName, userId, res ) => {
     if (process.env.DB_IGNORED !== 'true') {
         const uploadedAnsKey = answerKey.createAnswerKey(answerKeyId, answerKeyFileName, userId, (err, result) => {
@@ -112,13 +116,14 @@ const saveAnsFilesToDb = (answerKeyId, answerKeyFileName, attemptId, attemptFile
 }
 
 // --------------------------------------------------------
-
+// Hello world endpoint.
 router.get('/grade', (req, res) => {
     res.status(200).send('grade');
 })
 
 
 // Client needs to set request enctype to "multipart/form-data"
+// Returns a question's details like question text, correctness, idea behind answering question.
 router.post('/grade',(req, res) => {
     // Size check handled by "upload" function
     upload(req, res, async (err) => {
@@ -210,19 +215,10 @@ router.post('/grade',(req, res) => {
 })
 
 
+// Takes in an image and questions, then returns the boundaries of said questions on the image.
 router.post('/grade/marking', async (req, res) => {
 
   let base64pageImage = req.body.pageImage;
-  // let base64Img = pageImage.split(';base64,').pop();
-
-  // let imageFileName = uuidv7() + '.png';
-
-  // fs.writeFile(`./mediaUploadTemp/${imageFileName}`, base64Img, {encoding: 'base64'}, function(err) {
-  //   console.log('File created');
-  // });
-
-  // const uploadedFile = await openAIFileUpload(pageImage);
-
   let questionData = req.body.questions;
 
   let parsedQuestionData = [];

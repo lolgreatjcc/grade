@@ -1,6 +1,11 @@
 ﻿const z = require('zod');
 const { zodTextFormat } = require('openai/helpers/zod');
 
+// This file contains all designed prompts that get sent to OpenAI.
+// Each prompt segment is designed to have zod formatting of the expected response on top 
+// and a function which returns the actual prompt below. 
+
+
 const question = z.object({
   questionNumber: z.string(),
   questionText: z.string(),
@@ -14,7 +19,6 @@ const question = z.object({
 const splitQuestionsDataFormat = z.object({
   questions: z.array(question)
 })
-
 
 const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
   return {
