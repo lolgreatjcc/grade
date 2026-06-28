@@ -25,6 +25,7 @@ const upload = multer({
 })
 
 
+// Finds the number of MCQs and FRQs a pdf file has.
 router.post('/sheetGen', upload.single('file'), async (req, res) => {
 
   const inputQnSheetFile = req.file;
