@@ -4,8 +4,11 @@ import { useEffect } from "react";
 export default function Mcq({numberOfMcqs, setNumberOfMcqs, numberOfOptions, setNumberOfOptions}) {
     const options = [2,3,4,5,6,7];
     const min = 0;
+    // Maxed out at 30 when noOfOptions > 5 since MCQ gets too big.
     const max = numberOfOptions > 5 ? 30 : 40;
 
+
+    // Changes value based on max and min set above.
     const handleNumberOfMcqs = (event) => {
         const newNumberOfMcqs = event.target.valueAsNumber;
         if (newNumberOfMcqs > max) setNumberOfMcqs(max);
