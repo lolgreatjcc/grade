@@ -4,7 +4,7 @@ describe('generateFromFile', () => {
     const path = require('path');
     
     cy.visit('http://localhost:3000')
-    cy.get('#__next svg[stroke="#ffffff"]').click();
+    cy.get('#__next div.menu-module__noSqeG__iconContainer').click();
     cy.get('#__next div.m-3 h1.menu-module__noSqeG__menuItemText').click();
     
     // Stores current preview
