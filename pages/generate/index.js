@@ -17,7 +17,6 @@ const ponomar = Ponomar({
 })
 
 export default function Generate() {
-
     const [numberOfMcqs, setNumberOfMcqs] = useState(0);
     const [numberOfOptions, setNumberOfOptions] = useState(5);
     const [numberOfOeq, setNumberOfOeq] = useState(0);
@@ -27,12 +26,12 @@ export default function Generate() {
     const [subject, setSubject] = useState("CS2100 - COMPUTER ORGANISATION");
     const [year, setYear] = useState("(Semester 1: AY2024/25)");
     const [duration, setDuration] = useState("Time Allowed: 2 Hours");
+
+    // Handles the overlay that allows users to upload question papers for auto-generation.
     const [showOverlay, setShowOverlay] = useState(true);
-    
     const hideOverlay = () => {
       setShowOverlay(false);
     }
-
     const [uploadedQnNumbers, setUploadedQnNumbers] = useState(null);
     const populateQnNumbers = () => {
       if(uploadedQnNumbers !== null) {
@@ -43,10 +42,7 @@ export default function Generate() {
     }
 
 
-    useEffect(() => {
-        console.log(oeqData)
-    }, [oeqData])
-
+    // Generates an answer sheet pdf from parameters.
     const handleGenerateButton = async () => {
         const element = previewRef.current;
         if (!element) return;

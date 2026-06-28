@@ -29,7 +29,7 @@ export default function Grade() {
 
   const [questionOverlays, setQuestionOverlays] = useState([]);
 
-  // Finds smallest page and associated questions on first load..
+  // Finds smallest page and associated questions on first load
   useEffect(() => {
     if (markedData && initPage) {
       let questions = markedData.questions;
@@ -63,8 +63,7 @@ export default function Grade() {
   }, [markedData])
 
 
-  // Finds associated questions when current page changes..
-  // Fix with uuid...
+  // Finds and displays associated questions when current page changes
   useEffect(() => {
     let newCurrentQuestionList = [];
     for (let i = 0; i < markedData.questions.length; i++) {
@@ -80,6 +79,8 @@ export default function Grade() {
 
   }, [currentPage, markedData])
 
+
+  // Asks back-end for question boundaries (i.e. tooltip system) when page is loaded
   useEffect(() => {
     let resolvedBoundaries = true;
     for (let i = 0; i < currentQuestionList.length; i++) {
@@ -116,8 +117,6 @@ export default function Grade() {
         console.log(err);
       });
     }
-
-
   }, [currentQuestionList, currentImage]);
 
 
@@ -125,7 +124,7 @@ export default function Grade() {
 
 
 
-
+  // displays the current questions on front-end.
   const listMarkSections = currentQuestionList.map((question, index) => {
 
     return (
@@ -155,6 +154,7 @@ export default function Grade() {
 
 
 
+  // displays question boundaries on the page itself.
   const listQuestionOverlays = currentQuestionList.map((question, index) => {
 
     if (question.topLeftCoordinate) {

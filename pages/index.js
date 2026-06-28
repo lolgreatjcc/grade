@@ -13,10 +13,15 @@ import { useInterval } from "usehooks-ts";
 
 export default function Home() {
 
+  // Stores the answerSheet file and answerKey file.
+  // The format for the file obj stems from JS Web API. See: https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications
   const [answerSheet, setAnswerSheet] = useState(null);
   const [answerKey, setAnswerKey] = useState(null);
   
 
+
+  // Handles what happens when user uploads files.
+  // i.e file validation, converts to image, saves file into React State.
   const handleFile = async (event, setFileState, setPreviewImage) => {
     const file = event.target.files[0];
     if (file) {
