@@ -8,7 +8,7 @@ env:
 
 jobs:
     run_cypress_tests:
-      name: Starts backend
+      name: Runs Cypress Unit and E2E Tests
       runs-on: ubuntu-latest
       steps:
         - name: Checkout Front-end Branch
@@ -22,6 +22,12 @@ jobs:
 
         - name: Install Dependencies
           run: npm install
+
+        - name: Build front-end server
+          run: npm run build
+
+        - name: Start front-end server
+          run: npm run start
 
         - name: Run Cypress.io
           uses: cypress-io/github-action@v7
