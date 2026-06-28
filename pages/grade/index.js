@@ -66,6 +66,7 @@ export default function Grade() {
   // Finds and displays associated questions when current page changes
   useEffect(() => {
     let newCurrentQuestionList = [];
+    if (markedData === null) return;
     for (let i = 0; i < markedData.questions.length; i++) {
       if (markedData.questions[i].questionPage == currentPage) {
         newCurrentQuestionList.push(markedData.questions[i]);
@@ -93,7 +94,7 @@ export default function Grade() {
         pageImage: currentImage
       }
 
-      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/marking`, requestBody).then(result => {
+      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/grade/marking`, requestBody).then(result => {
 
 
         const newMarkedData = markedData;

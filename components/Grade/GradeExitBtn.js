@@ -2,16 +2,18 @@
 import { useRouter } from 'next/router';
 import styles from './GradeExitBtn.module.css';
 import { useLocalStorage } from 'usehooks-ts';
-
+import { useAnswerSheetStore } from '../../providers/answerSheetStoreProvider';
 
 
 export default function GradeExitBtn(props) {
 
   const [markedData, setMarkedData] = useLocalStorage("grade-markedData");
+  const setAnswerSheetImageArr = useAnswerSheetStore((state) => state.setAnswerSheetImageArr);
 
   const router = useRouter();
   const handleExit = () => {
     setMarkedData(null);
+    setAnswerSheetImageArr(null);
     router.back();
   }
 
