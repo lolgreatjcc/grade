@@ -4,6 +4,8 @@ const openAIFileUpload = require('../openAI/openAIGradeFileUpload');
 const openAIPrompts = require('../openAI/openAIPrompts');
 
 
+// Splits PDF into respective questions, then retrieves correctness, key idea behind question etc.
+// Uploads files to OpenAI, Designs prompts based on files, Sends OpenAI a request to retrieve details.
 const splitQuestions = async (answerSheetFileName, answerKeyFileName) => {
   
   const files = await openAIFileUpload(answerSheetFileName, answerKeyFileName);
