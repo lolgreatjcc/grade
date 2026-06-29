@@ -20,7 +20,7 @@ export default function MarkSection(props) {
 
   const { hoveredQn } = useHoveredQnStore();
 
-  // props
+  // Hold question details, usually retrieved from back-end but has backup values just in case.
   const correctness = props.correctness == null ? false : props.correctness;
   const correctnessMessage = props.correctnessMessage ? props.correctnessMessage : 'It seems like you left this question blank.'
   const elaborationText = props.elaborationText ? props.elaborationText : 'To solve this you’ll need to either simplify the first statement then use a truth table.'
@@ -29,11 +29,12 @@ export default function MarkSection(props) {
 
   const uuid = props.uuid ? props.uuid : '117';
 
+
+  // Handles redirect to Claude or ChatGPT
   const goToClaude = () => {
     const url = `https://claude.ai/new?q=${questionText}`;
     window.open(url, '_blank');
   }
-
   const goToGPT = () => {
     const url = `https://chatgpt.com/?q=${questionText}`
     window.open(url, '_blank');

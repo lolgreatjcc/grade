@@ -8,6 +8,8 @@ import { Ponomar } from "next/font/google";
 import Preview from "../../components/Generate/Preview";
 import jsPDF from "jspdf";
 import Header from "../../components/Generate/Header";
+import QnSheetButton from "../../components/Generate/GenerateOverlaySub/QnSheetButton.js";
+import GenerateOverlay from "../../components/Generate/GenerateOverlay.js";
 
 const ponomar = Ponomar({
     subsets: ['latin'],
@@ -25,10 +27,22 @@ export default function Generate() {
     const [year, setYear] = useState("(Semester 1: AY2024/25)");
     const [duration, setDuration] = useState("Time Allowed: 2 Hours");
 
-    useEffect(() => {
-        console.log(oeqData)
-    }, [oeqData])
+    // Handles the overlay that allows users to upload question papers for auto-generation.
+    const [showOverlay, setShowOverlay] = useState(true);
+    const hideOverlay = () => {
+      setShowOverlay(false);
+    }
+    const [uploadedQnNumbers, setUploadedQnNumbers] = useState(null);
+    const populateQnNumbers = () => {
+      if(uploadedQnNumbers !== null) {
+        setNumberOfMcqs(uploadedQnNumbers.multipleChoice);
+        setNumberOfOeq(uploadedQnNumbers.freeResponse);
+        hideOverlay();
+      }
+    }
 
+
+    // Generates an answer sheet pdf from parameters.
     const handleGenerateButton = async () => {
         const element = previewRef.current;
         if (!element) return;
@@ -114,6 +128,8 @@ export default function Generate() {
 
                     
                 </div>
+                <GenerateOverlay showOverlay={showOverlay} hideOverlay={hideOverlay} qnNumbers={uploadedQnNumbers} setQnNumbers={setUploadedQnNumbers} populateQnNumbers={populateQnNumbers}/>
+
             </div>
             
         </div>

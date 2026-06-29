@@ -28,6 +28,7 @@ export default function QuestionOverlay({ question, currentImage }) {
   }, [currentImage])
 
 
+  // Dynamically find out the relative boundaries of questions based on screen size.
   const topLeftCoordinate = question.topLeftCoordinate;
   const topLeftX = topLeftCoordinate[0];
   const topLeftY = topLeftCoordinate[1];
@@ -41,11 +42,6 @@ export default function QuestionOverlay({ question, currentImage }) {
 
   const rightOffset = 100 - (bottomRightX / imageWidth * 100);
   const bottomOffset = 100 - (bottomRightY / imageHeight * 100);
-
-
-
-
-  // should do validation for offsets...
 
 
 
