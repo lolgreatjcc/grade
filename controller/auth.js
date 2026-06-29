@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const user = require('../model/user');
 
+
+// Handles google authenthication  from googleID.
+// Creates a user entry on our DB if user isn't found,
+// finally retrieves users details.
 router.post('/auth', (req, res) => {
     if (process.env.DB_IGNORED == 'true') {
         // db is ignored, EC_10

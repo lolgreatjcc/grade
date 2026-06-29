@@ -10,17 +10,13 @@ const mcqMarker = async (answerSheet, answerKey) => {
     const template = {};
 
     // convert answerKey.pdf into images
-    const ansKeyBuffer = process.env.NODE_ENV ? answerKey.buffer 
-        // overhead on this local storage implementation
-        : await readFile(`mediaUploadTemp/${answerKey.filename}`)
+    const ansKeyBuffer = answerKey.buffer;
     const ansKeyParser = new PDFParse({'data': ansKeyBuffer});
     const ansKeyResult = await ansKeyParser.getScreenshot({'scale': 2});
     await ansKeyParser.destroy();
 
     // convert answerSheet.pdf into images
-    const ansSheetBuffer = process.env.NODE_ENV ? answerSheet.buffer 
-        // overhead on this local storage implementation
-        : await readFile(`mediaUploadTemp/${answerSheet.filename}`)
+    const ansSheetBuffer = answerSheet.buffer;
     const ansSheetParser = new PDFParse({'data': ansSheetBuffer});
     const ansSheetResult = await ansSheetParser.getScreenshot({'scale': 2});
     await ansSheetParser.destroy();

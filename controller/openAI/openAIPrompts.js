@@ -1,6 +1,11 @@
 ﻿const z = require('zod');
 const { zodTextFormat } = require('openai/helpers/zod');
 
+// This file contains all designed prompts that get sent to OpenAI.
+// Each prompt segment is designed to have zod formatting of the expected response on top 
+// and a function which returns the actual prompt below. 
+
+
 const question = z.object({
   questionNumber: z.string(),
   questionText: z.string(),
@@ -14,7 +19,6 @@ const question = z.object({
 const splitQuestionsDataFormat = z.object({
   questions: z.array(question)
 })
-
 
 const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
   return {
@@ -97,7 +101,44 @@ const findBoundaries = (base64Image, questionData) => {
   }
 }
 
+const findQuestionNumbersFormat = z.object({
+  multipleChoice: z.int(),
+  freeResponse: z.int()
+})
+
+const findQuestionNumbers = (qnSheetFileID) => {
+  return {
+    prompt: {
+      "id": "pmpt_6a3e18368e108194b79b715977164a2e054958cb05a487d8",
+      "version": "1"
+    },
+    input: [{
+      "role": "user",
+      "content": [
+        {
+          "type": "input_file",
+          "file_id": qnSheetFileID,
+        }
+      ]
+    }],
+    reasoning: {
+      "summary": "concise"
+    },
+    store: true,
+    include: [
+      "reasoning.encrypted_content",
+      "web_search_call.action.sources"
+    ],
+    text: {
+      format: zodTextFormat(findQuestionNumbersFormat, 'find_question_numbers')
+    }
+  }
+}
+
+
+
 module.exports = {
   splitQuestionsPrompt: splitQuestionsPrompt,
-  findBoundaries: findBoundaries
+  findBoundaries: findBoundaries,
+  findQuestionNumbers: findQuestionNumbers
 }

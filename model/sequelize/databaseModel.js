@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const uuid = require('uuid');
 const uuidv7 = uuid.v7;
+const pg = require('pg');
 
 // Please define your details in the .env file
 // that should be at the top level (same as app.js)
@@ -12,6 +13,7 @@ const host = process.env.DATABASE_HOST;
 
 const sequelize = new Sequelize({
     dialect: 'postgres',
+    dialectModule: pg,
     define: {
         timestamps: false,
         freezeTableName: true
