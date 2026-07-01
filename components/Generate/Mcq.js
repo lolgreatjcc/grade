@@ -10,6 +10,7 @@ export default function Mcq({numberOfMcqs, setNumberOfMcqs, numberOfOptions, set
 
     // Changes value based on max and min set above.
     const handleNumberOfMcqs = (event) => {
+      console.log('test');
         const newNumberOfMcqs = event.target.valueAsNumber;
         if (newNumberOfMcqs > max) setNumberOfMcqs(max);
         else if (newNumberOfMcqs < min) setNumberOfMcqs(min);

@@ -1,0 +1,42 @@
+name: Test Front-end Environment
+
+on:
+  push:
+
+env: 
+    NEXT_PUBLIC_BACKEND_URL: ${{ vars.NEXT_PUBLIC_BACKEND_URL }}
+    NEXT_PUBLIC_SECRET: ${{ secrets.NEXT_PUBLIC_SECRET }}
+
+jobs:
+    run_cypress_tests:
+      name: Runs Cypress Unit and E2E Tests
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Front-end Branch
+          uses: actions/checkout@v7
+
+        # - name: Setup Node.js environment
+        #   uses: actions/setup-node@v6.4.0
+        #   with:
+        #     node-version: 22.x
+        #     cache: npm
+
+        # - name: Install Dependencies
+        #   run: npm install
+
+        # - name: Build front-end server
+        #   run: npm run build
+
+        # - name: Start front-end server
+        #   run: npm run start
+
+        - name: Run Cypress.io
+          uses: cypress-io/github-action@v7
+          with:
+            build: npm run build
+            start: npm start
+            browser: chrome
+            headed: true
+    
+          
+    
