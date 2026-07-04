@@ -23,8 +23,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderRadius: 15,
     backgroundColor: '#2A1F13',
-    marginLeft: 15,
-    marginRight: 15,
     paddingTop: 15,
     paddingBottom: 15,
     justifyContent: 'center',

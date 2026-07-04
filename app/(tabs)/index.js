@@ -13,7 +13,9 @@ export default function LandingScreen() {
     <HomeGradient>
       <SafeAreaView style={styles.safeAreaView}>
 
-        <Logo />
+        <View>
+          <Logo />
+        </View>
         <View style={{ flex: 1 }}></View>
 
 
@@ -28,6 +30,8 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
     width: '100%',
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   answerSheetParent: {
     backgroundColor: '#85603C'
