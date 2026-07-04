@@ -17,6 +17,7 @@ export default function Logo() {
 const styles = StyleSheet.create({
   logoDesign: {
     fontSize: 96,
+    letterSpacing: -1,
     fontFamily: "Ponomar_400Regular"
   }
 
