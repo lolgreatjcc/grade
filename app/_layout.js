@@ -1,4 +1,5 @@
 import { Ponomar_400Regular } from '@expo-google-fonts/ponomar/400Regular';
+import { Raleway_400Regular } from '@expo-google-fonts/raleway'
 import { useFonts } from '@expo-google-fonts/ponomar/useFonts';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
@@ -13,7 +14,8 @@ export const unstable_settings = {
 export default function RootLayout() {
 
   let [fontsLoaded] = useFonts({
-    Ponomar_400Regular
+    Ponomar_400Regular,
+    Raleway_400Regular
   })
 
   if(!fontsLoaded) {
@@ -22,7 +24,7 @@ export default function RootLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
     </Stack>
   );
 }
