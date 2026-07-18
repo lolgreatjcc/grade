@@ -4,11 +4,16 @@ import Logo from "./Logo";
 import useFileStore from "../../store/landing/fileStore";
 import { File, Directory, Paths } from 'expo-file-system';
 import axios from "axios";
+import { useState } from "react";
+import LottieView from "lottie-react-native";
 
+const LoadingIcon = require('../Animated Icons/Loading.json')
 
 
 
 export default function GradeButton() {
+
+  const [loading, setLoading] = useState(false);
 
   const answerSheet = useFileStore((state) => state.answerSheet);
   const answerKey = useFileStore((state) => state.answerKey);
@@ -23,10 +28,11 @@ export default function GradeButton() {
 
 
   async function grade() {
-    console.log(acceptableFiles);
-    if (!acceptableFiles) return true
+    if (!acceptableFiles || loading) return true
 
-    
+    setLoading(true);
+
+
     const formData = new FormData();
 
     formData.append('files', {
@@ -45,13 +51,20 @@ export default function GradeButton() {
       console.log(result);
     }).catch((err) => {
       console.log(err);
+    }).finally(() => {
+      setLoading(false)
     })
   }
 
   return (
     <Pressable style={styles.parentContainer} onPress={grade}>
       <View style={styles.buttonContainer}>
-        <GradientText text={'grade'} textStyle={styles.textDesign} colors={['#BAA678', '#E7E0DE']} />
+        {loading ?
+          <LottieView source={LoadingIcon} autoPlay={true} style={{height: 75, aspectRatio: 1}}/>
+          :
+          <GradientText text={'grade'} textStyle={styles.textDesign} colors={['#BAA678', '#E7E0DE']} />
+
+        }
       </View>
     </Pressable>
   )
@@ -63,6 +76,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonContainer: {
+    height: 75,
     borderRadius: 15,
     backgroundColor: '#2A1F13',
     paddingTop: 15,
