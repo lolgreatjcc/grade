@@ -8,11 +8,16 @@ import LottieView from "lottie-react-native";
 const SuccessIcon = require('../Animated Icons/Success.json')
 const ErrorIcon = require('../Animated Icons/Error.json')
 
+import Animated from 'react-native-reanimated';
+
+const AnimatedTouchableHighlight = Animated.createAnimatedComponent(TouchableHighlight);
 
 export default function FileButton({
   text = "Fill text",
-  width = "65%",
-  setFile = () => { }
+  width = null,
+  setFile = () => { },
+  onAcceptableFile = () => { },
+  onUnacceptableFile = () => { }
 }) {
 
 
@@ -34,12 +39,14 @@ export default function FileButton({
 
 
     const selectedFile = value.assets[0];
-    if (selectedFile.mimeType === 'application/pdf' && selectedFile.size < 5242880 ) {
+    if (selectedFile.mimeType === 'application/pdf' && selectedFile.size < 5242880) {
       selectedFile.acceptable = true;
       setAcceptableFile(true);
+      onAcceptableFile();
     } else {
       selectedFile.acceptable = false;
       setAcceptableFile(false);
+      onUnacceptableFile();
     }
 
     setFile(selectedFile);
@@ -48,11 +55,11 @@ export default function FileButton({
 
 
   return (
-    <TouchableHighlight style={[{ width: width }, styles.btnParent]} onPress={retrieveFile} underlayColor={'#A6A0A0'} activeOpacity={0.85} onLayout={setUploadSize}>
+    <AnimatedTouchableHighlight style={[{ width: width }, styles.btnParent]} onPress={retrieveFile} underlayColor={'#A6A0A0'} activeOpacity={0.85} onLayout={setUploadSize}>
       <View style={styles.btn}>
         {acceptableFile == null && <MaterialIcons name="upload" color="#888587" size={dynamicIconSize} />}
         {acceptableFile == true && <LottieView source={SuccessIcon} style={{ width: dynamicIconSize, height: dynamicIconSize }} loop={false} autoPlay />}
-        {acceptableFile == false && <LottieView source={ErrorIcon} style={{ width: dynamicIconSize + 32, height: dynamicIconSize + 32 }}  autoPlay />}
+        {acceptableFile == false && <LottieView source={ErrorIcon} style={{ width: dynamicIconSize + 32, height: dynamicIconSize + 32 }} autoPlay />}
 
 
 
@@ -63,7 +70,7 @@ export default function FileButton({
           <Text style={styles.text}>{text}</Text>
         </View>
       </View>
-    </TouchableHighlight>
+    </AnimatedTouchableHighlight>
   )
 }
 
