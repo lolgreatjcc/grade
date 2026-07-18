@@ -45,7 +45,7 @@ export default function LandingScreen() {
       <SafeAreaView style={styles.safeAreaView}>
         <Logo />
 
-        <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center', backgroundColor: 'green' }}>
+        <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
           <FileButton text='Answer Sheet' width={sheetWidth} setFile={setAnswerSheet}
             onAcceptableFile={() => setAcceptableSheet(true)}
             onUnacceptableFile={() => setAcceptableSheet(false)}
