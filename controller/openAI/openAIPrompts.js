@@ -15,16 +15,17 @@ const question = z.object({
   keyIdea: z.string(),
   whereUserWentWrong: z.string(),
   questionPage: z.int(),
+  questionType: z.int()
 })
 const splitQuestionsDataFormat = z.object({
   questions: z.array(question)
 })
 
-const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
+const splitQuestionsPromptDual = (answerSheetfileID, answerKeyFileID) => {
   return {
     prompt: {
-      "id": "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
-      "version": "6"
+      "id": process.env.DUAL_FILE_PROMPT_ID || "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
+      "version": process.env.DUAL_FILE_PROMPT_VERSION || "8"
     },
     input: [
       {
@@ -37,6 +38,45 @@ const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
           {
             "type": "input_file",
             "file_id": answerKeyFileID,
+          }
+        ]
+      }
+    ],
+    reasoning: {
+      "summary": "concise"
+    },
+    store: true,
+    include: [
+      "reasoning.encrypted_content",
+      "web_search_call.action.sources"
+    ],
+    text: {
+      format: zodTextFormat(splitQuestionsDataFormat, 'split_questions')
+    }
+  }
+}
+
+const splitQuestionsPromptTriple = (answerSheetfileID, answerKeyFileID, questionPaperFileID) => {
+  return {
+    prompt: {
+      "id": process.env.TRIPLE_FILE_PROMPT_ID || "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
+      "version": process.env.TRIPLE_FILE_PROMPT_VERSION || "9"
+    },
+    input: [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "input_file",
+            "file_id": answerSheetfileID,
+          },
+          {
+            "type": "input_file",
+            "file_id": answerKeyFileID,
+          },
+          {
+            "type": "input_file",
+            "file_id": questionPaperFileID,
           }
         ]
       }
@@ -138,7 +178,8 @@ const findQuestionNumbers = (qnSheetFileID) => {
 
 
 module.exports = {
-  splitQuestionsPrompt: splitQuestionsPrompt,
+  splitQuestionsPromptDual: splitQuestionsPromptDual,
+  splitQuestionsPromptTriple: splitQuestionsPromptTriple,
   findBoundaries: findBoundaries,
   findQuestionNumbers: findQuestionNumbers
 }
