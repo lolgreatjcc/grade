@@ -6,6 +6,7 @@ import { OMRChecker } from '@armghan3071/omrchecker';
 import AnswerSheetButton from '../../components/Omr/AnswerSheetButton';
 import { pdfToImg } from "pdftoimg-js/browser";
 import omr_template from "../../components/Omr/omr_template";
+import { useRouter } from "next/router";
 
 export default function Generate() {
     // Stores the answerSheet file and answerKey file.
@@ -13,6 +14,7 @@ export default function Generate() {
     const [testFile, setTestFile] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     const [fileObj, setFileObj] = useState(null);
+    const router = useRouter();
 
     // Handles what happens when user uploads files.
     // i.e file validation, converts to image, saves file into React State.
@@ -81,6 +83,10 @@ export default function Generate() {
         
         omr();
     }, [fileObj])
+
+    useEffect(() => {
+        router.push('/grade');
+    }, [])
  
 
     return (

@@ -92,19 +92,6 @@ export default function GradeButton({ answerSheet, answerKey, questionPaper, sup
           }
         }
       }
-      // delete this later
-      // else {
-      //   const questionLength = questionData.questions.length;
-      //   for (let i = 0; i < questionLength; i++) {
-      //     if (omrAnswers[i]?.trim() !== '') {
-      //       questionData.questions[i].omrAnswer = omrAnswers[i];
-      //       questionData.questions[i].isOmr = true;
-      //     } else {
-      //       questionData.questions[i].omrAnswer = "";
-      //       questionData.questions[i].isOmr = false;
-      //     }
-      //   }
-      // }
       const markedData = { ...questionData, "qrData": result.data.qrData, 'omrAnswers': omrAnswers};
 
       saveMarkedData(markedData);
