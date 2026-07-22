@@ -3,16 +3,22 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const uuid = require('fix-esm').require("uuid");
+exports.uuid = uuid;
 const uuidv7 = uuid.v7;
 const answerKey = require('../model/answerKey');
 const attempt = require('../model/attempt')
 
 const {openaiClient} = require('./openAI/openaiClient');
 
+// cache for testing
+const app = express();
+app.locals.CACHE = null;
+
 // utils
-const mcqMarker = require('../utils/mcqMarker');
+const mcqMarker = require('../utils/mcqMarker/mcqMarker');
 const verifyBodyUserId = require('../utils/verify');
 const splitQuestions = require('./gradeUtils/splitQuestions');
+const genAnsSheet = require('../utils/genAnsSheet');
 
 
 // Azure imports
@@ -56,9 +62,9 @@ const upload = multer({
     'storage': storage, 
     'limits': {
         'fileSize': 5242880, // 5MB
-        'files': 2
+        'files': 3
     }
-}).array('files', 2);
+}).array('files', 3);
 
 
 // Checks extension of accepted files (used on /grade endpoint)
@@ -137,12 +143,13 @@ router.post('/grade',(req, res) => {
             // receive both files
             let files = req.files;
             let azureLinks = []
-            let numOfFiles = files.length;
+            const numOfFiles = files.length;
             const answerSheet = files[0];
-            const answerKey = files[1];
+            const answerKey = files[numOfFiles - 1];
+            const questionPaper = numOfFiles === 3 ? files[1] : null;
 
             // file checks
-            if (numOfFiles !== 2) { // didn't receive both files (43)
+            if (numOfFiles < 2) { // didn't receive both files (43)
                 res.status(400).send({'message': 'Invalid number of files submitted. EC_43'});
                 return;
             } else if (checkExtension(files, ['.pdf']) == false) { // invalid file format (44)
@@ -151,22 +158,26 @@ router.post('/grade',(req, res) => {
             }
 
 
-            if (req.body.user_id !== "undefined" && req.body.user_id !== undefined && req.body.user_id !== null) {
-              console.log('testing');
-                verifyBodyUserId(req, res);
-            };            
+            // if (req.body.user_id !== "undefined" && req.body.user_id !== undefined && req.body.user_id !== null) {
+            //   console.log('testing');
+            //     verifyBodyUserId(req, res);
+            // };            
            
-            // file upload to azure (if applicable) and save to db
-            let userId = (req.body.user_id === null || req.body.user_id === "undefined") ? '019e555d-94ed-7336-ba9f-2b0622f5370f' : req.body.user_id; //dummy value for now
+            // // file upload to azure (if applicable) and save to db
+            // let userId = (req.body.user_id === null || req.body.user_id === "undefined") ? '019e555d-94ed-7336-ba9f-2b0622f5370f' : req.body.user_id; //dummy value for now
             
-            // Creating uuid names for azure
-            let answerKeyId = uuidv7();
-            let answerKeyFileName = `${answerKeyId}.pdf`;
+            // Creating uuid names for azure/openai
+            const answerKeyId = uuidv7();
+            const answerKeyFileName = `${answerKeyId}.pdf`;
             answerKey.filename = answerKeyFileName;
 
-            let attemptId = uuidv7();
-            let attemptFileName = `${attemptId}.pdf`;
+            const attemptId = uuidv7();
+            const attemptFileName = `${attemptId}.pdf`;
             answerSheet.filename = attemptFileName;
+
+            const questionPaperId = uuidv7();
+            const questionPaperFileName = `${questionPaperId}.pdf`;
+            questionPaper && (questionPaper.filename = questionPaperFileName);
 
             // upload into azure storage
             //const shareName = process.env.AZUREFILESHARENAME;
@@ -178,19 +189,38 @@ router.post('/grade',(req, res) => {
 
             // process answer sheet and answer key
             try {
-                const markedImages = await mcqMarker(answerSheet, answerKey);
-                let response = await splitQuestionsBuffer(files[0].buffer, markedImages.answerSheetFilename, files[1].buffer, markedImages.answerKeyFilename);
-                let splitQuestionsData = JSON.parse(response.output_text);
+                // cached version
+                // let response = undefined;
 
-                for (let i = 0; i < splitQuestionsData.questions.length; i++) {
-                  splitQuestionsData.questions[i].uuid = uuidv7();
-                }
+                // if (app.locals.CACHE === 'undefined' || app.locals.CACHE === null) {
+                //     response = await splitQuestionsBuffer(answerSheet, answerKey, questionPaper);
+                //     let splitQuestionsData = JSON.parse(response.output_text);
+                //     splitQuestionsData = JSON.stringify(splitQuestionsData);
+                //     app.locals.CACHE = splitQuestionsData;
+                // }
+
+                // const markedImages = await mcqMarker(answerSheet, answerKey, questionPaper);
+                
+
+                // res.status(200).send({
+                //     'message': 'marking successful', 
+                //     'data': app.locals.CACHE,
+                //     'answer_sheet': markedImages.answerSheet,
+                //     'qrData': markedImages.qrData
+                // });
+
+                let response = await splitQuestionsBuffer(answerSheet, answerKey, questionPaper);
+                let splitQuestionsData = JSON.parse(response.output_text);
                 splitQuestionsData = JSON.stringify(splitQuestionsData);
+
+                const markedImages = await mcqMarker(answerSheet, answerKey, questionPaper);
+                
 
                 res.status(200).send({
                     'message': 'marking successful', 
                     'data': splitQuestionsData,
-                    'answer_sheet': markedImages.answerSheet
+                    'answer_sheet': markedImages.answerSheet,
+                    'qrData': markedImages.qrData
                 });
                 return;
             } catch(err) {
@@ -235,5 +265,12 @@ router.post('/grade/marking', async (req, res) => {
 
 
 })
+
+// --------------------------------------------------------
+// Generate Answer Sheet testing endpoint
+// router.get('/grade/generate', (req, res) => {
+//     generateAnswerSheetMcq(30, 4, `${uuidv7()}.pdf`)
+//     res.status(200).send('generated pdf');
+// })
 
 module.exports = router;
