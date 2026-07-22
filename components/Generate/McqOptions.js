@@ -1,9 +1,11 @@
 import styles from './Options.module.css'
 
-export default function McqOptions({numberOfOptions, setNumberOfOptions, options, numberOfMcqs, setNumberOfMcqs}) {
+export default function McqOptions({numberOfOptions, setNumberOfOptions, options, numberOfMcqs, setNumberOfMcqs,
+    max67, threshold
+}) {
     
     const handleOptionSelect = (option) => {
-        if (numberOfMcqs > 30 && option > 5) setNumberOfMcqs(30);
+        if (numberOfMcqs > max67 && option > threshold) setNumberOfMcqs(max67);
         setNumberOfOptions(option);
     }
 

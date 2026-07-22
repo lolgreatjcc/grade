@@ -3,7 +3,17 @@ import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import { pdfToImg } from 'pdftoimg-js/browser';
 import Image from 'next/image';
-import styles from '../../pages/grade/index.module.css'
+import styles from '../../pages/grade/index.module.css';
+import QRCode from 'qrcode';
+
+const answers = ['A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E',
+                'A', 'B', 'C', 'D', 'E'];
 
 export default function Preview({numberOfMcqs, numberOfOptions, oeqData, previewRef, institution, subject, year, duration}) {
     const [previewImages, setPreviewImages] = useState([]);
@@ -17,7 +27,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     const lines = ["w-70 h-32", 'w-70 h-42', 'w-170 h-32', 'w-170 h-42'];
     const box = ["w-24 h-13", "w-50 h-30", "w-100 h-70", "w-170 h-100"];
     const columns = 28;
-    const rowsPerCol = 10;
+    const rowsPerCol = 15;
 
     const htmlToPreview = async () => {
         const element = previewRef.current;
@@ -35,9 +45,10 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
             'html2canvas': {
                 scale: 3, // Increase this to increase resolution
                 useCORS: true, // allow images from other origins
-                logging: false
+                logging: false,
             },
-            'pagebreak': { 'mode': ['avoid-all', 'css', 'legacy'] }
+            'pagebreak': { 'mode': ['avoid-all', 'css', 'legacy'] },
+            'margin': 7
         }
 
         // Convert html to pdf datauri. .outputImg exists but only one image
@@ -74,7 +85,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     // Header above and below mcq boxes (Q A B C D E ...)
     const renderMcqHeader = (options, length, gridCols, numberOfCols, hideQ) => {
         // set up number of grids
-        let tempHeader = `<div class="flex align-center grid ${gridCols} gap-1 ${hideQ !== true ? "pb-3" : "pt-3"}">`;
+        let tempHeader = `<div class="flex align-center grid grid-cols-28 gap-1 my-2">`;
         
         for (let col = 0; col < numberOfCols; col++) {
             // show "Q" only on the first column
@@ -90,6 +101,18 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
         return tempHeader;
     }
 
+    // Markers on left and right side of paper
+    const renderMcqMarkers = (options) => {
+        if (options?.bottom) return `<div class="flex py-2 justify-between mt-14">
+                    <image src="./omr_marker.jpg" width=40 height=40 class=""/>
+                    <image src="./omr_marker.jpg" width=40 height=40 class=""/>
+                    </div>`
+        else return `<div class="flex py-2 justify-between mb-14 mt-10">
+                    <image src="./omr_marker.jpg" width=40 height=40 class=""/>
+                    <image src="./omr_marker.jpg" width=40 height=40 class=""/>
+                    </div>`
+    };
+
     const handlePageNext = () => {
         if (pageIndex + 1 < previewImages.length) setPageIndex(pageIndex + 1);
     }
@@ -99,86 +122,100 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     }
     
     useEffect(() => {
-        let tempContent = "";
+        const generateContent = async () => {
+            let tempContent = "";
+            const qrContent = JSON.stringify({
+                "numberOfMcqs": numberOfMcqs,
+                "numberOfOptions": numberOfOptions
+            });
+            const qrImgBase64 = await QRCode.toDataURL(qrContent);
+            // Header of paper
+            tempContent += `
+            <h1 class="text-sm text-center font-semibold pt-10">${institution || "&nbsp;"}</h1>
+            <span class="text-base font-black text-center block">${subject || "&nbsp;"}</span>
+            <h1 class="text-sm text-center">${year || "&nbsp;"}</h1>
+            <h1 class="text-sm text-center">${duration || "&nbsp;"}</h1>
+            <image src="${qrImgBase64}" width=140 height=140 class="absolute top-0 left-0"/>
+            `
 
-        // Header of paper
-        tempContent += `
-        <h1 class="text-sm text-center font-semibold pt-10">${institution}</h1>
-        <span class="text-base font-black text-center block">${subject}</span>
-        <h1 class="text-sm text-center">${year}</h1>
-        <h1 class="text-sm text-center">${duration}</h1>
-        `
+            // Rendering MCQ
+            if (numberOfMcqs > 0 && numberOfOptions > 1) {                
+                // MCQ Headers
+                tempContent += `<div class="w-full border-1 my-4"></div>`;
+                tempContent += `<span class="text-base font-black block">Part A: Multiple Choice Questions</span>`
+                tempContent += `<span>Please shade using</span> <span class="underline font-black">pencil</span> <span>only once bubble for each question.</span>`
 
-        // Rendering MCQ
-        if (numberOfMcqs > 0 && numberOfOptions > 1) {
-            // MCQ Headers
-            tempContent += `<div class="w-full border-1 my-4"></div>`;
-            tempContent += `<span class="text-base font-black block">Part A: Multiple Choice Questions</span>`
-            tempContent += `<text>Please shade using</text> <text class="underline font-black">pencil</text> <text>only once bubble for each question.</text>`
-            
-            // MCQ box
-            tempContent += `<div class='w-full border-1 my-3 pb-3 px-2'>`;
-            const gridCols = `grid-cols-${columns}`; //hardcoded to 28 for now
-            const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol) // calculate num of sets of columns
-            tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol);
-            for (let i = 0; i < rowsPerCol; i++ ) { // for each row (Q1, Q11, Q21, Q31, then Q2, Q12, Q22, Q32, etc)
-                tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1">`
-                for (let col = 0; col < requiredCol; col++) { // for each set of columns
-                    const questionNumber = i + 1 + col * rowsPerCol;
-                    if (questionNumber <= numberOfMcqs) { // only render if question exists
-                        tempContent += `<h1 class="text-xs col-span-2 text-center align-middle">${questionNumber}</h1>`
-                        for (let i = 0; i < numberOfOptions; i++) { // render options (A, B, C, D, ...)
-                            tempContent += `<div class="border-1 col-span-1 aspect-square rounded-full self-center"></div>`
+                // Top markers for OMR to locate box
+                tempContent += renderMcqMarkers();
+
+                // MCQ box
+                tempContent += `<div class='w-full border-1 px-6'>`;
+                const gridCols = `grid-cols-28`; //hardcoded to 28 for now
+                const requiredCol = Math.ceil(numberOfMcqs / rowsPerCol) // calculate num of sets of columns
+                tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol);
+                for (let i = 0; i < rowsPerCol; i++ ) { // for each row (Q1, Q11, Q21, Q31, then Q2, Q12, Q22, Q32, etc)
+                    if ((i < numberOfMcqs - 1) && (i < rowsPerCol - 1)) tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1 pb-1">`
+                    else tempContent += `<div class="flex align-center items-center grid grid-cols-28 gap-1">`
+                    for (let col = 0; col < requiredCol; col++) { // for each set of columns
+                        const questionNumber = i + 1 + col * rowsPerCol;
+                        if (questionNumber <= numberOfMcqs) { // only render if question exists
+                            tempContent += `<h1 class="text-xs col-span-2 text-center align-middle">${questionNumber}</h1>`
+                            for (let i = 0; i < numberOfOptions; i++) { // render options (A, B, C, D, ...)
+                                tempContent += `<div class="border-1 col-span-1 aspect-square rounded-full self-center"></div>`
+                            }
                         }
                     }
+                    tempContent += "</div>";
+                }
+                // Render (A, B, C, D...) at the bottom, after all the bubbles
+                tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol, true);
+                tempContent += "</div>";
+
+                // Render bottom markers to fully bound mcq with markers
+                tempContent += renderMcqMarkers({'bottom': true});
+            }
+
+            // Open Ended
+            if (oeqData.length > 0) {
+                const numberOfQuestions = oeqData.length;
+                
+                // if there are no MCQs, render divider between header and Open Ended
+                if (numberOfMcqs === 0) tempContent += `<div class="w-full border-1 my-4"></div>`;
+                if (numberOfMcqs !== 0) tempContent += `<text class="font-bold break-before-page">Part B: Open Ended Questions</text>`
+                else tempContent += `<text class="font-bold">Part B: Open Ended Questions</text>`
+                tempContent += `<h1 class="pb-1">Write your answers within the boxes provided</h1>`
+
+                for (let i = 0; i < numberOfQuestions; i++) { // For each question
+                    const questionNumber = numberOfMcqs + i + 1;
+                    const subQuestionLength = oeqData[i].subpart.length; // Check if sub question exist (a, b, c, ...)
+
+                    // putting questions with the same main question number together for auto paging
+                    tempContent += `<div class="block"><div class="flex flex-wrap">`
+                    if (subQuestionLength > 0) { // if subQuestions exists
+                        for (let j = 0; j < subQuestionLength; j++) {
+                            const subpartLength = oeqData[i].subpart[j].subpart.length; // Check if sub parts exist
+                            if (subpartLength > 0) { // if there are sub parts (i, ii, iii, ...)
+                                for (let k = 0; k < subpartLength; k++) { 
+                                    // rendering for sub part (i, ii, iii, ...)
+                                    tempContent += oeqPicker(oeqData[i].subpart[j].subpart[k].type, oeqData[i].subpart[j].subpart[k].size, questionNumber, j, k);
+                                }
+                            } else {
+                                // rendering for sub question (a, b, c, ...)
+                                tempContent += oeqPicker(oeqData[i].subpart[j].type, oeqData[i].subpart[j].size, questionNumber, j);
+                            }
+                        }
+                    } else {
+                        // rendering for main question
+                        tempContent += oeqPicker(oeqData[i].type, oeqData[i].size, questionNumber);
+                    }
+                    tempContent += `</div></div>`
                     
                 }
-                tempContent += "</div>";
             }
-            // Render (A, B, C, D...) at the bottom, after all the bubbles
-            tempContent += renderMcqHeader(options, numberOfOptions, gridCols, requiredCol, true);
-            tempContent += "</div>";
+            // setting content to be generated
+            setContent(tempContent)
         }
-
-        // Open Ended
-        if (oeqData.length > 0) {
-            const numberOfQuestions = oeqData.length;
-            
-            // if there are no MCQs, render divider between header and Open Ended
-            if (numberOfMcqs === 0) tempContent += `<div class="w-full border-1 my-4"></div>`;
-            tempContent += `<text class="text-base font-bold block">Part B: Open Ended Questions</text>`
-            tempContent += `<h1 class="pb-1">Write your answers within the boxes provided</h1>`
-
-            for (let i = 0; i < numberOfQuestions; i++) { // For each question
-                const questionNumber = numberOfMcqs + i + 1;
-                const subQuestionLength = oeqData[i].subpart.length; // Check if sub question exist (a, b, c, ...)
-
-                // putting questions with the same main question number together for auto paging
-                tempContent += `<div class="block"><div class="flex flex-wrap">`
-                if (subQuestionLength > 0) { // if subQuestions exists
-                    for (let j = 0; j < subQuestionLength; j++) {
-                        const subpartLength = oeqData[i].subpart[j].subpart.length; // Check if sub parts exist
-                        if (subpartLength > 0) { // if there are sub parts (i, ii, iii, ...)
-                            for (let k = 0; k < subpartLength; k++) { 
-                                // rendering for sub part (i, ii, iii, ...)
-                                tempContent += oeqPicker(oeqData[i].subpart[j].subpart[k].type, oeqData[i].subpart[j].subpart[k].size, questionNumber, j, k);
-                            }
-                        } else {
-                            // rendering for sub question (a, b, c, ...)
-                            tempContent += oeqPicker(oeqData[i].subpart[j].type, oeqData[i].subpart[j].size, questionNumber, j);
-                        }
-                    }
-                } else {
-                    // rendering for main question
-                    tempContent += oeqPicker(oeqData[i].type, oeqData[i].size, questionNumber);
-                }
-                tempContent += `</div></div>`
-                
-            }
-        }
-        // setting content to be generated
-        setContent(tempContent)
-
+        generateContent();
     }, [numberOfMcqs, numberOfOptions, oeqData, institution, subject, year, duration])
 
     // render preview upon content update (Headers, MCQ, Open Ended)
@@ -203,7 +240,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
             <h1 className="text-center max-h-1/12" onClick={htmlToPreview}>Preview</h1>
             <div className="max-h-10/12 h-full flex justify-center relative">
                 <div className="bg-white max-h-full h-full aspect-5/7 hidden text-black">
-                    <div className="max-h-full h-full text-black p-7" ref={previewRef} dangerouslySetInnerHTML={{ __html: content }}/>
+                    <div className="text-black" ref={previewRef} dangerouslySetInnerHTML={{ __html: content }}/>
                 </div>
 
                 <div className="max-h-full aspect-[1/1.414] text-black relative">
