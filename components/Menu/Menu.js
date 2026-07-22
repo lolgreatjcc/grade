@@ -1,7 +1,7 @@
 import styles from './menu.module.css'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react';
-import { handleSignOut } from '@/utils/googleAuth';
+import { handleSignOut, handleSignIn } from '@/utils/googleAuth';
 import { useState } from 'react';
 
 export default function Menu() {
@@ -25,7 +25,7 @@ export default function Menu() {
         if (session) {
             handleSignOut();
         } else {
-            loginRedirect();
+            handleSignIn();
         }
     }
     
