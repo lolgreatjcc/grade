@@ -124,10 +124,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     useEffect(() => {
         const generateContent = async () => {
             let tempContent = "";
-            const qrContent = JSON.stringify({"institution": institution, 
-                "subject": subject, 
-                "year": year, 
-                "duration": duration,
+            const qrContent = JSON.stringify({
                 "numberOfMcqs": numberOfMcqs,
                 "numberOfOptions": numberOfOptions
             });
