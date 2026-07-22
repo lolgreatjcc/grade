@@ -11,9 +11,13 @@ export default function TabLayout() {
         tabBarStyle: { display: 'none' }
       }}>
       <Tabs.Screen
-        name="index"
-        
+        name="grade"
       />
+      <Tabs.Screen
+        name="index"
+
+      />
+
     </Tabs>
   );
 }
