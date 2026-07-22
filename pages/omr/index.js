@@ -96,7 +96,6 @@ export default function Generate() {
                     previewImage={previewImage} 
                     setPreviewImage={setPreviewImage} 
                 />
-                <div>bbb</div>
                 </div>  
         </div>
     );
