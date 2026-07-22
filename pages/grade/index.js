@@ -33,16 +33,20 @@ export default function Grade() {
   useEffect(() => {
     if (markedData && initPage) {
       let questions = markedData.questions;
-      let lowestPage = questions[0].questionPage;
-      let highestPage = questions[0].questionPage;
+      const imageArrLen = answerSheetImageArr.length;
+      let lowestPage = imageArrLen;
+      let highestPage = 1;
 
       for (let i = 1; i < markedData.questions.length; i++) {
-        if (markedData.questions[i].questionPage < lowestPage) {
-          lowestPage = markedData.questions[i].questionPage
+        const currentQuestionPage = markedData.questions[i].questionPage;
+        if (currentQuestionPage < lowestPage) {
+          if (currentQuestionPage <= imageArrLen) lowestPage = currentQuestionPage;
+          else lowestPage = 1;
         }
 
-        if (markedData.questions[i].questionPage > highestPage) {
-          highestPage = markedData.questions[i].questionPage
+        if (currentQuestionPage > highestPage) {
+          if (currentQuestionPage <= imageArrLen) highestPage = currentQuestionPage;
+          else highestPage = imageArrLen;
         }
       }
 
@@ -137,6 +141,8 @@ export default function Grade() {
         questionNumber={question.questionNumber}
         questionText={question.questionText}
         uuid={question.uuid}
+        isOmr={question.isOmr}
+        omrAnswer={question.omrAnswer}
       />
     )
   });

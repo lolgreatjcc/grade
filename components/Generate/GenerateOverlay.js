@@ -5,6 +5,7 @@ import { pdfToImg } from "pdftoimg-js/browser";
 import GenerateOverlayPopulateButton from "./GenerateOverlaySub/GenerateOverlayPopulateButton";
 import { motion } from "motion/react";
 import axios from "axios";
+import UploadSheetButton from "../Landing/UploadSheetButton";
 
 export default function GenerateOverlay({ showOverlay = false, hideOverlay, qnNumbers, setQnNumbers, populateQnNumbers}) {
   if (!showOverlay) return (<></>);
@@ -56,7 +57,7 @@ export default function GenerateOverlay({ showOverlay = false, hideOverlay, qnNu
     <div className={`${styles.generateOverlayParent}`}>
       <h1 className={`${styles.headerText}  text-xl`}>Generate from Question Paper</h1>
       <div className="flex m-10">
-        <QnSheetButton handleFile={handleFile} setQnSheet={setQnSheet} />
+        <UploadSheetButton handleFile={handleFile} setSheet={setQnSheet} caption={"Question Paper"}/>
         {!requestStarted ? null :
           qnNumbers === null ?
             <div className="flex flex-col justify-center items-center mb-5">
