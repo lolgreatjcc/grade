@@ -126,6 +126,11 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
     <div className={`${styles.generateOverlayParent} z-51`}>
       <h1 className={`${styles.headerText}  text-xl mb-2`}>{caption}</h1>
       <div className="w-3/5 h-4/7 border rounded-md overflow-scroll py-4 px-6">
+        {isLoading && 
+          <div className='h-full w-full flex justify-center items-center'>
+              <h1>Loading files from drive...</h1>
+          </div>
+        }
         {driveData && driveData.map(file => 
           <div className={""}>
               <ItemSelect setSelectedFileId={setSelectedFileId} 
