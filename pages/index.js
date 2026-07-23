@@ -1,6 +1,6 @@
 'use-client';
 
-import UploadSheetButton from "../components/Landing/UploadSheetButton";
+import UploadSheetButton from "../components/Common/FileUpload/UploadSheetButton";
 import GradeButton from "@/components/Landing/GradeButton";
 import Logo from "@/components/Logo";
 import Menu from "@/components/Menu/Menu";

@@ -5,7 +5,7 @@ import { pdfToImg } from "pdftoimg-js/browser";
 import GenerateOverlayPopulateButton from "./GenerateOverlaySub/GenerateOverlayPopulateButton";
 import { motion } from "motion/react";
 import axios from "axios";
-import UploadSheetButton from "../Landing/UploadSheetButton";
+import UploadSheetButton from "../Common/FileUpload/UploadSheetButton";
 
 export default function GenerateOverlay({ showOverlay = false, hideOverlay, qnNumbers, setQnNumbers, populateQnNumbers}) {
   if (!showOverlay) return (<></>);
