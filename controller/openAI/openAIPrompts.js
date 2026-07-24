@@ -15,13 +15,30 @@ const question = z.object({
   keyIdea: z.string(),
   whereUserWentWrong: z.string(),
   questionPage: z.int(),
-  questionType: z.int()
 })
+
+const questionTriple = z.object({
+  questionNumber: z.string(),
+  questionText: z.string(),
+  userAnswer: z.string(),
+  correctAnswer: z.string(),
+  userCorrectness: z.boolean(),
+  keyIdea: z.string(),
+  whereUserWentWrong: z.string(),
+  questionPage: z.int(),
+  questionType: z.string()
+})
+
 const splitQuestionsDataFormat = z.object({
   questions: z.array(question)
 })
 
+const splitQuestionsDataFormatTriple = z.object({
+  questions: z.array(questionTriple)
+})
+
 const splitQuestionsPromptDual = (answerSheetfileID, answerKeyFileID) => {
+  console.log("Prompting with version " + process.env.DUAL_FILE_PROMPT_VERSION)
   return {
     prompt: {
       "id": process.env.DUAL_FILE_PROMPT_ID || "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
@@ -57,10 +74,11 @@ const splitQuestionsPromptDual = (answerSheetfileID, answerKeyFileID) => {
 }
 
 const splitQuestionsPromptTriple = (answerSheetfileID, answerKeyFileID, questionPaperFileID) => {
+  console.log("Prompting with version " + process.env.TRIPLE_FILE_PROMPT_VERSION)
   return {
     prompt: {
       "id": process.env.TRIPLE_FILE_PROMPT_ID || "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
-      "version": process.env.TRIPLE_FILE_PROMPT_VERSION || "9"
+      "version": process.env.TRIPLE_FILE_PROMPT_VERSION || "10"
     },
     input: [
       {
@@ -70,13 +88,13 @@ const splitQuestionsPromptTriple = (answerSheetfileID, answerKeyFileID, question
             "type": "input_file",
             "file_id": answerSheetfileID,
           },
-          {
+                    {
             "type": "input_file",
-            "file_id": answerKeyFileID,
+            "file_id": questionPaperFileID,
           },
           {
             "type": "input_file",
-            "file_id": questionPaperFileID,
+            "file_id": answerKeyFileID,
           }
         ]
       }
@@ -90,7 +108,7 @@ const splitQuestionsPromptTriple = (answerSheetfileID, answerKeyFileID, question
       "web_search_call.action.sources"
     ],
     text: {
-      format: zodTextFormat(splitQuestionsDataFormat, 'split_questions')
+      format: zodTextFormat(splitQuestionsDataFormatTriple, 'split_questions')
     }
   }
 }
