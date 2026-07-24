@@ -22,7 +22,9 @@ export default function MarkSection(props) {
 
   // Hold question details, usually retrieved from back-end but has backup values just in case.
   const correctness = props.correctness == null ? false : props.correctness;
-  const correctnessMessage = props.correctnessMessage ? props.correctnessMessage : 'It seems like you left this question blank.'
+  const correctnessMessage = props.correctnessMessage ? props.correctnessMessage : 
+  (props.isOmr && props.omrAnswer == props.correctAnswer) ? 'Question was answered correctly' 
+  : 'It seems like you left this question blank.'
   const elaborationText = props.elaborationText ? props.elaborationText : 'To solve this you’ll need to either simplify the first statement then use a truth table.'
   const elaborationImage = props.elaborationImage ? props.elaborationImage : exampleAns;
   const questionText = props.questionText ? props.questionText : '';

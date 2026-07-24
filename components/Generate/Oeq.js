@@ -50,11 +50,11 @@ export default function Oeq({numberOfMcqs, numberOfOeq, setNumberOfOeq, oeqData,
     }
 
     return (
-        <div className={`h-full max-h-full`}>
-            <h1 className={`text-2xl font-bold pb-2 pt-5 text-white`}>Part B</h1>
+        <div className={`h-full max-h-full text-[#FFFFFFCC]`}>
+            <h1 className={`text-2xl font-bold pb-2 pt-5`}>Part B</h1>
             <div className={`flex h-min`}>
-                <h1 className={`text-2xl mr-5 text-white`}>Number of Questions</h1>
-                <input defaultValue={0} min={0} className={`text-2xl w-20 focus:outline-hidden border-white border-b-3 text-white text-center`} 
+                <h1 className={`text-2xl mr-5`}>Number of Questions</h1>
+                <input defaultValue={0} min={0} className={`text-2xl w-20 focus:outline-hidden border-b-3 text-center`} 
                 onBlur={(event) => handleNumberOfOeq(numberOfOeq, event.target.valueAsNumber, oeqData, 1)} 
                 type="number"></input>
             </div>

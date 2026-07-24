@@ -30,11 +30,11 @@ export default function Menu() {
     }
     
     return (
-        <div className="select-none">
+        <div className="select-none text-[#FFFFFFCC]">
             { expanded ? 
             <div className={`${styles.menuItemContainer}`}>
                 <div className={`${styles.iconContainer}`} onClick={handleMenuButton}>
-                    <svg height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" >
+                    <svg height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#FFFFFFCC" >
                         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                         <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
                         <g id="SVGRepo_iconCarrier"> 
@@ -42,13 +42,13 @@ export default function Menu() {
                         </g>
                     </svg>
                 </div>
-                <div className={`${styles.menuItem} mx-3 mt-1 mb-3`} onClick={handleLoginButton}><h1 className={`${styles.menuItemText} text-white`}>{session ? "Sign Out" : "Login"}</h1></div>
-                <div className={`${styles.menuItem} m-3`} onClick={handleGenerateButton}><h1 className={`${styles.menuItemText} text-white`}>Generate Answer Sheet</h1></div>
+                <div className={`${styles.menuItem} mx-3 mt-1 mb-3`} onClick={handleLoginButton}><h1 className={`${styles.menuItemText}`}>{session ? "Sign Out" : "Login"}</h1></div>
+                <div className={`${styles.menuItem} m-3`} onClick={handleGenerateButton}><h1 className={`${styles.menuItemText}`}>Generate Answer Sheet</h1></div>
             </div> 
             :
             <div className={`${styles.iconContainer}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" stroke="#ffffff" fill="none" onClick={handleMenuButton}>
-                    <path fill="#ffffff" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
+                <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" stroke="#FFFFFFCC" fill="none" onClick={handleMenuButton}>
+                    <path fill="#FFFFFFCC" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
                 </svg>
             </div>
             }

@@ -18,9 +18,9 @@ const ponomar = Ponomar({
   weight: '400'
 })
 
-export default function GradeButton({ answerSheet, answerKey, questionPaper, supplementQuestionPaper }) {
+export default function GradeButton({ answerSheet, answerKey, questionPaper, 
+  supplementQuestionPaper, loading, setLoading }) {
   const [markedData, saveMarkedData] = useLocalStorage("grade-markedData", null);
-  const [loading, setLoading] = useState(false);
   const session = useSession().data;
   const answerSheetImageArr = useAnswerSheetStore((state) => state.answerSheetImageArr);
   const setAnswerSheetImageArr = useAnswerSheetStore((state) => state.setAnswerSheetImageArr);

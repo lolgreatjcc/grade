@@ -236,7 +236,7 @@ export default function Preview({numberOfMcqs, numberOfOptions, oeqData, preview
     }, [maxPage])
 
     return (
-        <div className="flex-1 min-h-0 h-full justify-items-center-safe text-white">
+        <div className="flex-1 min-h-0 h-full justify-items-center-safe text-[#FFFFFFCC]">
             <h1 className="text-center max-h-1/12" onClick={htmlToPreview}>Preview</h1>
             <div className="max-h-10/12 h-full flex justify-center relative">
                 <div className="bg-white max-h-full h-full aspect-5/7 hidden text-black">

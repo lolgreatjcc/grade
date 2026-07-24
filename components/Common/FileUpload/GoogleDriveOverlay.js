@@ -9,7 +9,6 @@ import { handleSignOut, handleSignIn } from '@/utils/googleAuth';
 import ItemSelect from './ItemSelect';
 
 export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, gDriveFileUpload, caption = "Select a File" }) {
-  if (!showOverlay) return (<></>);
   const [showGooglePicker, setShowGooglePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
@@ -45,7 +44,7 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
             },
             body: JSON.stringify({'extensions': extensions, 'folderId': folderId}),
           });
-        console.log(response);
+
         if (!response.ok) throw new Error("Failed to fetch files in user's drive");
         const data = await response.json();
         return data.structure;
@@ -123,7 +122,7 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
   }
 
   return (
-    <div className={`${styles.generateOverlayParent} z-51`}>
+    <div className={`${styles.generateOverlayParent} z-51 text-[#FFFFFFCC]`}>
       <h1 className={`${styles.headerText}  text-xl mb-2`}>{caption}</h1>
       <div className="w-3/5 h-4/7 border rounded-md overflow-scroll py-4 px-6">
         {isLoading && 
@@ -132,11 +131,9 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
           </div>
         }
         {driveData && driveData.map(file => 
-          <div className={""}>
               <ItemSelect setSelectedFileId={setSelectedFileId} 
               selectedFileId={selectedFileId} file={file} fetchFolder={fetchFolder}
-              depth={1}/>
-          </div>
+              depth={1} key={file.id}/>
         )}
       </div>
       <div className={'flex w-3/5 p-2 justify-center'}>

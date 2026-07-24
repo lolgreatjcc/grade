@@ -20,6 +20,7 @@ export default function Home() {
   const [questionPaper, setQuestionPaper] = useState(null);
   const [supplementQuestionPaper, setSupplementQuestionPaper] = useState(false);
   const [showTutorialOverlay, setShowTutorialOverlay] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 
   // Handles what happens when user uploads files.
@@ -50,7 +51,7 @@ export default function Home() {
 
         <Menu />
       </div>
-      <div className="absolute bottom-10 right-10 cursor-pointer">
+      <div className="absolute bottom-10 right-10 cursor-pointer display-none">
         <h2 className={`${styles.tutorialBtnTxt} text-2xl`}>Need a tutorial?</h2>
       </div>
       <div
@@ -58,15 +59,19 @@ export default function Home() {
       >
         <div className="flex">
 
-          <UploadSheetButton setSheet={setAnswerSheet} handleFile={handleFile} caption={'Answer Sheet'}/>
-          {supplementQuestionPaper && <UploadSheetButton setSheet={setQuestionPaper} handleFile={handleFile} caption={'Question Paper'}/>}
-          <UploadSheetButton setSheet={setAnswerKey} handleFile={handleFile} caption={'Answer Key'}/>
+          <UploadSheetButton setSheet={setAnswerSheet} handleFile={handleFile} 
+          caption={'Answer Sheet'} disabled={loading}/>
+          {supplementQuestionPaper && <UploadSheetButton setSheet={setQuestionPaper} 
+          handleFile={handleFile} caption={'Question Paper'} disabled={loading}/>}
+          <UploadSheetButton setSheet={setAnswerKey} handleFile={handleFile} 
+          caption={'Answer Key'} disabled={loading}/>
 
         </div>
 
         <ToggleButton setState={setSupplementQuestionPaper} text={"Supplement Question Paper"} />
         <GradeButton answerSheet={answerSheet} answerKey={answerKey} 
-        questionPaper={questionPaper} supplementQuestionPaper={supplementQuestionPaper}/>
+        questionPaper={questionPaper} supplementQuestionPaper={supplementQuestionPaper}
+        loading={loading} setLoading={setLoading}/>
       </div>
 
 
