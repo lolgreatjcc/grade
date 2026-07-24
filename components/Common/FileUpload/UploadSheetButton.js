@@ -7,7 +7,7 @@ import { getToken } from 'next-auth/jwt';
 import { google } from 'googleapis';
 import UploadOverlay from "./UploadOverlay";
 
-export default function UploadSheetButton({handleFile, setSheet, caption}) {
+export default function UploadSheetButton({handleFile, setSheet, caption, disabled = false}) {
   const [fileStatus, setFileStatus] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -35,7 +35,7 @@ export default function UploadSheetButton({handleFile, setSheet, caption}) {
   }
 
   const handleUploadClick = () => {
-    setShowOverlay(true);
+    if (!disabled) setShowOverlay(true);
     //triggerLocalUpload();
   };
 
@@ -47,12 +47,19 @@ export default function UploadSheetButton({handleFile, setSheet, caption}) {
 
   return (
     <div>
-      <div className={`${showFileStatus(fileStatus)} bg-white w-70 h-99 rounded-md mx-8 my-4 cursor-pointer relative overflow-hidden`}
+      <div className={`${showFileStatus(fileStatus)} bg-white w-70 h-99 rounded-md 
+      mx-8 my-4 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} relative overflow-hidden`}
       onClick={handleUploadClick}>
-        <Image className="max-w-100 max-h-100" alt="img" fill={true} src={previewImage ? previewImage : 'https://picsum.photos/200/300'}/>
+        <Image className="max-w-100 max-h-100" alt="img" fill={true} 
+        src={previewImage ? previewImage : 'https://picsum.photos/200/300'}/>
         <div className={`${styles.overlay}`}>
-          <input className={`${styles.fileInput}`} type="file" accept=".pdf" onChange={handleSheet} color="rgba(0,0,0,0)" ref={inputRef}/>
-          <svg className={`${styles.uploadIcon}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path fill="currentColor" d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
+          <input className={`${styles.fileInput}`} type="file" accept=".pdf" 
+          onChange={handleSheet} color="rgba(0,0,0,0)" ref={inputRef}/>
+          <svg className={`${styles.uploadIcon}`} xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 -960 960 960"><path fill="currentColor" 
+          d="M440-320v-326L336-542l-56-58 200-200 200 200-56 
+          58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 
+          33-23.5 56.5T720-160H240Z" /></svg>
           <p className={`${styles.caption}`}>{caption}</p>
         </div>
       </div>
