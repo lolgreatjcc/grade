@@ -195,6 +195,11 @@ router.post('/grade',(req, res) => {
                 // if (app.locals.CACHE === 'undefined' || app.locals.CACHE === null) {
                 //     response = await splitQuestionsBuffer(answerSheet, answerKey, questionPaper);
                 //     let splitQuestionsData = JSON.parse(response.output_text);
+
+                //     for (let i = 0; i < splitQuestionsData.questions.length; i++) {
+                //         splitQuestionsData.questions[i].uuid = uuidv7();
+                //     }
+                
                 //     splitQuestionsData = JSON.stringify(splitQuestionsData);
                 //     app.locals.CACHE = splitQuestionsData;
                 // }
@@ -211,8 +216,12 @@ router.post('/grade',(req, res) => {
 
                 let response = await splitQuestionsBuffer(answerSheet, answerKey, questionPaper);
                 let splitQuestionsData = JSON.parse(response.output_text);
-                splitQuestionsData = JSON.stringify(splitQuestionsData);
 
+                for (let i = 0; i < splitQuestionsData.questions.length; i++) {
+                    splitQuestionsData.questions[i].uuid = uuidv7();
+                }
+
+                splitQuestionsData = JSON.stringify(splitQuestionsData);
                 const markedImages = await mcqMarker(answerSheet, answerKey, questionPaper);
                 
 
