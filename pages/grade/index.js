@@ -31,7 +31,12 @@ export default function Grade() {
 
   // Finds smallest page and associated questions on first load
   useEffect(() => {
-    if (markedData && initPage) {
+    if (markedData && initPage && answerSheetImageArr) {
+      console.log("--------------image array--------------");
+      console.log(answerSheetImageArr);
+      console.log("--------------marked data--------------");
+      console.log(markedData)
+
       let questions = markedData.questions;
       const imageArrLen = answerSheetImageArr.length;
       let lowestPage = imageArrLen;
@@ -40,12 +45,12 @@ export default function Grade() {
       for (let i = 1; i < markedData.questions.length; i++) {
         const currentQuestionPage = markedData.questions[i].questionPage;
         if (currentQuestionPage < lowestPage) {
-          if (currentQuestionPage <= imageArrLen) lowestPage = currentQuestionPage;
+          if (currentQuestionPage > 0 && currentQuestionPage <= imageArrLen) lowestPage = currentQuestionPage;
           else lowestPage = 1;
         }
 
         if (currentQuestionPage > highestPage) {
-          if (currentQuestionPage <= imageArrLen) highestPage = currentQuestionPage;
+          if (currentQuestionPage > 0 && currentQuestionPage <= imageArrLen) highestPage = currentQuestionPage;
           else highestPage = imageArrLen;
         }
       }
@@ -60,11 +65,12 @@ export default function Grade() {
       setCurrentPage(lowestPage);
       setMinPage(lowestPage);
       setMaxPage(highestPage);
+      console.log(lowestPage); 
       setCurrentImage(answerSheetImageArr[lowestPage - 1].dataUrl)
       setCurrentQuestionList(newCurrentQuestionList);
       setInitPage(false);
     }
-  }, [markedData])
+  }, [markedData, answerSheetImageArr])
 
 
   // Finds and displays associated questions when current page changes

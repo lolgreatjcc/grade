@@ -56,13 +56,13 @@ export default function UploadSheetButton({handleFile, setSheet, caption}) {
           <p className={`${styles.caption}`}>{caption}</p>
         </div>
       </div>
-      <UploadOverlay 
+      {showOverlay && <UploadOverlay 
       showOverlay={showOverlay}
       hideOverlay={hideOverlay}
       caption={"Upload " + caption}
       localFileUpload={triggerLocalUpload}
       gDriveFileUpload={triggerGoogleDriveUpload}
-      />
+      />}
     </div>
     
 

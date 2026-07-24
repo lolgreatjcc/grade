@@ -43,13 +43,13 @@ export default function ItemSelect({selectedFileId, setSelectedFileId, file, fet
         {isLoading && <h1 className={`${styles.unselected} ml-2`}>(Loading...)</h1>}
         {!folderHasCompatibleFiles && <h1 className={`${styles.unselected} ml-2`}>(No compatible files)</h1>}
       </div>
-      <div className={'w-full border-1'}/>
+      {depth == 1 && <div className={'w-full border-1'}/>}
         {expanded && childData.length > 0 && 
           <div>
             {childData.map(
             child => <ItemSelect setSelectedFileId={setSelectedFileId} file={child}
             fetchFolder={fetchFolder} depth={depth + 1} 
-            selectedFileId={selectedFileId}/>
+            selectedFileId={selectedFileId} key={file.id}/>
             )}
           </div>
         }

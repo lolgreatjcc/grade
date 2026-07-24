@@ -7,7 +7,6 @@ import UploadSheetButton from "./UploadSheetButton";
 import GoogleDriveOverlay from './GoogleDriveOverlay';
 
 export default function UploadOverlay({ showOverlay = false, hideOverlay, localFileUpload, gDriveFileUpload, caption}) {
-  if (!showOverlay) return (<></>);
   const [showGooglePicker, setShowGooglePicker] = useState(false);
 
   const getGoogleDriveFile = async () => {
@@ -19,7 +18,7 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
   }
 
   return (
-    <div className={`${styles.generateOverlayParent} z-50`}>
+    <div className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC]`}>
       <h1 className={`${styles.headerText}  text-xl`}>{caption}</h1>
       <div className="flex m-4">
       </div>
@@ -29,7 +28,7 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
           onClick={getGoogleDriveFile}>
           <h1 className={`text-center`}>Upload from Google Drive</h1>
         </div>
-        <div className='h-120 border mx-8'/>
+        <div className='h-120 border mx-8 text-[#FFFFFFCC]'/>
         <div className={`w-80 h-110 ${styles.activeButton} 
         bg-black rounded-lg flex items-center justify-center cursor-pointer`}
           onClick={localFileUpload}>
@@ -41,7 +40,7 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
        onClick={hideOverlay}>
         <h1 className={``}>Back</h1>
       </div>
-      <GoogleDriveOverlay showOverlay={showGooglePicker} hideOverlay={hideGooglePicker} gDriveFileUpload={gDriveFileUpload}/>
+      {showGooglePicker && <GoogleDriveOverlay showOverlay={showGooglePicker} hideOverlay={hideGooglePicker} gDriveFileUpload={gDriveFileUpload}/>}
     </div>
   )
 }
