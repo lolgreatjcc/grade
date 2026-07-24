@@ -32,11 +32,6 @@ export default function Grade() {
   // Finds smallest page and associated questions on first load
   useEffect(() => {
     if (markedData && initPage && answerSheetImageArr) {
-      console.log("--------------image array--------------");
-      console.log(answerSheetImageArr);
-      console.log("--------------marked data--------------");
-      console.log(markedData)
-
       let questions = markedData.questions;
       const imageArrLen = answerSheetImageArr.length;
       let lowestPage = imageArrLen;
@@ -65,7 +60,6 @@ export default function Grade() {
       setCurrentPage(lowestPage);
       setMinPage(lowestPage);
       setMaxPage(highestPage);
-      console.log(lowestPage); 
       setCurrentImage(answerSheetImageArr[lowestPage - 1].dataUrl)
       setCurrentQuestionList(newCurrentQuestionList);
       setInitPage(false);
