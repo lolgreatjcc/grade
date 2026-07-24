@@ -51,7 +51,7 @@ export default function Home() {
 
         <Menu />
       </div>
-      <div className="absolute bottom-10 right-10 cursor-pointer display-none">
+      <div className="absolute bottom-10 right-10 cursor-pointer hidden">
         <h2 className={`${styles.tutorialBtnTxt} text-2xl`}>Need a tutorial?</h2>
       </div>
       <div
