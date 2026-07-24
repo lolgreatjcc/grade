@@ -2,7 +2,9 @@
 const nextConfig = {
   /* config options here */
   images: {
-    remotePatterns: [new URL('https://picsum.photos/**')]
+    remotePatterns: [new URL('https://picsum.photos/**'), 
+      new URL('https://drive-thirdparty.googleusercontent.com/**')
+    ]
   },
   env: {
     NEXT_PUBLIC_OAUTHCLIENTSECRET: process.env.NEXT_PUBLIC_OAUTHCLIENTSECRET,
