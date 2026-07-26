@@ -60,7 +60,8 @@ export default function Generate() {
                 useCORS: true, // allow images from other origins
                 logging: false
             },
-            'pagebreak': { 'mode': ['avoid-all', 'css', 'legacy'] }
+            'pagebreak': { 'mode': ['avoid-all', 'css', 'legacy'] },
+            'margin': 7
         }
 
         await html2pdf().set(options).from(element).save();

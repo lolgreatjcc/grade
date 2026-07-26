@@ -22,8 +22,7 @@
   bottom: 10;
   right: 10;
   user-select: none;
-  color: #1e1c1bc7;
-  background-color: #ffffff3c;
+  color: #1E1C1B40;
 }
 
 .uploadIcon {
@@ -32,11 +31,10 @@
 }
 
 .fileInput {
-  height: 0px;
-  width: 0px;
+  height: 100%;
+  width: 100%;
   color: transparent;
   position: absolute;
-  display: none;
 }
 
 .fileInput:hover {

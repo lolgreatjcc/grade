@@ -1,9 +1,4 @@
-﻿
-
-import { Ponomar } from "next/font/google"
-
-
-import { useState } from "react";
+﻿import { useState } from "react";
 import styles from "./GenerateOverlayPopulateButton.module.css";
 
 export default function GenerateOverlayPopulateButton({ populateQnNumbers }) {

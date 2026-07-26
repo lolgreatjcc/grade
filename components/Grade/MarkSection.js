@@ -22,7 +22,9 @@ export default function MarkSection(props) {
 
   // Hold question details, usually retrieved from back-end but has backup values just in case.
   const correctness = props.correctness == null ? false : props.correctness;
-  const correctnessMessage = props.correctnessMessage ? props.correctnessMessage : 'It seems like you left this question blank.'
+  const correctnessMessage = props.correctnessMessage ? props.correctnessMessage : 
+  (props.isOmr && props.omrAnswer == props.correctAnswer) ? 'Question was answered correctly' 
+  : 'It seems like you left this question blank.'
   const elaborationText = props.elaborationText ? props.elaborationText : 'To solve this you’ll need to either simplify the first statement then use a truth table.'
   const elaborationImage = props.elaborationImage ? props.elaborationImage : exampleAns;
   const questionText = props.questionText ? props.questionText : '';
@@ -38,6 +40,11 @@ export default function MarkSection(props) {
   const goToGPT = () => {
     const url = `https://chatgpt.com/?q=${questionText}`
     window.open(url, '_blank');
+  }
+
+  const omrResultIfAvailable = () => {
+    if (props.isOmr) return props.omrAnswer + " (OMR-ed)";
+    else return props.userAnswer
   }
 
   const currentlyHovered = uuid == hoveredQn;
@@ -58,7 +65,7 @@ export default function MarkSection(props) {
                 <h1 className={styles.muted}>Question {props.questionNumber}</h1>
                 <div className='flex'>
                   <h1 className={styles.muted}>Your Answer: </h1>
-                  <h1 className={styles.qna}> {props.userAnswer}</h1>
+                  <h1 className={styles.qna}> {omrResultIfAvailable()}</h1>
                   <h1 className={styles.muted}>| Correct Answer: </h1>
                   <h1 className={styles.qna}> {props.correctAnswer}</h1>
                   {/* <h1 className='styles'>|</h1>
@@ -72,7 +79,7 @@ export default function MarkSection(props) {
               }
 
               {isCollapsed ? null :
-                <motion.h1 key={isCollapsed} transition={collapseTransition} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>{elaborationText}</motion.h1>
+                <motion.h1 key={isCollapsed} transition={collapseTransition} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={'text-black'}>{elaborationText}</motion.h1>
               }
 
             </motion.div>

@@ -86,7 +86,7 @@ export default function OeqQuestion({numberOfMcqs, numberOfOeq, oeqData, setOeqD
         const questionNumber = numberOfMcqs + 1 + (!isQuestion(level) ? questionIndex : index) ;
         const subpartNumber = index + 1;
         return (
-            <div className={`text-white ${isSubQuestion(level) && (subpartNumber !== 1) && "pt-10"}`} key={`${questionNumber}${isSubQuestion(level) && "." + subpartNumber}${isSubPart(level) && "." + subpartNumber}`}>
+            <div className={` ${isSubQuestion(level) && (subpartNumber !== 1) && "pt-10"}`} key={`${questionNumber}${isSubQuestion(level) && "." + subpartNumber}${isSubPart(level) && "." + subpartNumber}`}>
                 {isQuestion(level) && <h1>Q{questionNumber}</h1>}
             {questionData.subpart.length === 0 ?  <div className={`grid grid-cols-10 gap-1 mb-4`}>
                 <div className="col-span-4">

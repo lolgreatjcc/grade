@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /* config options here */
-  reactStrictMode: true,
   images: {
-    remotePatterns: [new URL('https://picsum.photos/**')]
+    remotePatterns: [new URL('https://picsum.photos/**'), 
+      new URL('https://drive-thirdparty.googleusercontent.com/**')
+    ]
   },
   env: {
     NEXT_PUBLIC_OAUTHCLIENTSECRET: process.env.NEXT_PUBLIC_OAUTHCLIENTSECRET,
     NEXT_PUBLIC_OAUTHCLIENTID: process.env.NEXT_PUBLIC_OAUTHCLIENTID,
-    NEXT_PUBLIC_SECRET: process.env.NEXT_PUBLIC_SECRET,
+    AUTH_SECRET: process.env.AUTH_SECRET,
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL
   },
 };
