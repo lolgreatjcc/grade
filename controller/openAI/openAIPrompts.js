@@ -16,15 +16,33 @@ const question = z.object({
   whereUserWentWrong: z.string(),
   questionPage: z.int(),
 })
+
+const questionTriple = z.object({
+  questionNumber: z.string(),
+  questionText: z.string(),
+  userAnswer: z.string(),
+  correctAnswer: z.string(),
+  userCorrectness: z.boolean(),
+  keyIdea: z.string(),
+  whereUserWentWrong: z.string(),
+  questionPage: z.int(),
+  questionType: z.string()
+})
+
 const splitQuestionsDataFormat = z.object({
   questions: z.array(question)
 })
 
-const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
+const splitQuestionsDataFormatTriple = z.object({
+  questions: z.array(questionTriple)
+})
+
+const splitQuestionsPromptDual = (answerSheetfileID, answerKeyFileID) => {
+  console.log("Prompting with version " + process.env.DUAL_FILE_PROMPT_VERSION)
   return {
     prompt: {
-      "id": "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
-      "version": "6"
+      "id": process.env.DUAL_FILE_PROMPT_ID || "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
+      "version": process.env.DUAL_FILE_PROMPT_VERSION || "8"
     },
     input: [
       {
@@ -51,6 +69,46 @@ const splitQuestionsPrompt = (answerSheetfileID, answerKeyFileID) => {
     ],
     text: {
       format: zodTextFormat(splitQuestionsDataFormat, 'split_questions')
+    }
+  }
+}
+
+const splitQuestionsPromptTriple = (answerSheetfileID, answerKeyFileID, questionPaperFileID) => {
+  console.log("Prompting with version " + process.env.TRIPLE_FILE_PROMPT_VERSION)
+  return {
+    prompt: {
+      "id": process.env.TRIPLE_FILE_PROMPT_ID || "pmpt_6a198519f7108190a900e5d91ea72dcc07c01073f8a1c16b",
+      "version": process.env.TRIPLE_FILE_PROMPT_VERSION || "10"
+    },
+    input: [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "input_file",
+            "file_id": answerSheetfileID,
+          },
+                    {
+            "type": "input_file",
+            "file_id": questionPaperFileID,
+          },
+          {
+            "type": "input_file",
+            "file_id": answerKeyFileID,
+          }
+        ]
+      }
+    ],
+    reasoning: {
+      "summary": "concise"
+    },
+    store: true,
+    include: [
+      "reasoning.encrypted_content",
+      "web_search_call.action.sources"
+    ],
+    text: {
+      format: zodTextFormat(splitQuestionsDataFormatTriple, 'split_questions')
     }
   }
 }
@@ -138,7 +196,8 @@ const findQuestionNumbers = (qnSheetFileID) => {
 
 
 module.exports = {
-  splitQuestionsPrompt: splitQuestionsPrompt,
+  splitQuestionsPromptDual: splitQuestionsPromptDual,
+  splitQuestionsPromptTriple: splitQuestionsPromptTriple,
   findBoundaries: findBoundaries,
   findQuestionNumbers: findQuestionNumbers
 }

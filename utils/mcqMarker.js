@@ -4,6 +4,7 @@ const { PDFParse } = require('pdf-parse');
 const { readFile } = require('node:fs/promises');
 const { writeFile } = require('node:fs/promises');
 const { createWorker } = require('tesseract.js');
+const scanQr = require('./scanQr.js');
 
 const mcqMarker = async (answerSheet, answerKey) => {
     // settings for OMR
@@ -18,7 +19,7 @@ const mcqMarker = async (answerSheet, answerKey) => {
     // convert answerSheet.pdf into images
     const ansSheetBuffer = answerSheet.buffer;
     const ansSheetParser = new PDFParse({'data': ansSheetBuffer});
-    const ansSheetResult = await ansSheetParser.getScreenshot({'scale': 2});
+    const ansSheetResult = await ansSheetParser.getScreenshot({'scale': 2.5});
     await ansSheetParser.destroy();
     
     //await writeFile('test.png', ansSheetResult.pages[0].data);
@@ -52,11 +53,15 @@ const mcqMarker = async (answerSheet, answerKey) => {
         //ansSheetImgArr[i].ocrText = ansSheetOCRRes.data.text;
         //await worker.terminate();
     }
+
+    const qrData = await scanQr(ansSheetImgArr[0].dataUrl);
+
     return {
         'answerSheet': ansSheetImgArr, 
         'answerSheetFilename': answerSheet.filename,
         'answerKey': ansKeyImgArr,
-        'answerKeyFilename': answerKey.filename
+        'answerKeyFilename': answerKey.filename,
+        'qrData': qrData
     };
 
 }
