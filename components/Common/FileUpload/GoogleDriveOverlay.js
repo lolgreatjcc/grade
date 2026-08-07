@@ -102,7 +102,7 @@ export default function GoogleDriveOverlay({ showOverlay, hideOverlay, gDriveFil
 
             // fake event to reuse function expecting event.target.files
             const fakeEvent = {'target': {'files': [file]}}
-            gDriveFileUpload(fakeEvent);
+            gDriveFileUpload(fakeEvent, hideOverlay);
 
           } catch (error) {
             console.error('Error fetching file:', error);

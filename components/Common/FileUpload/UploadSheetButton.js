@@ -29,8 +29,9 @@ export default function UploadSheetButton({handleFile, setSheet, caption, disabl
     inputRef.current.click();
   }
 
-  const triggerGoogleDriveUpload = async (event) => {
+  const triggerGoogleDriveUpload = async (event, setShowGoogleOverlay) => {
     setFileStatus( await handleFile(event, setSheet, setPreviewImage));
+    setShowGoogleOverlay(false);
     setShowOverlay(false);
   }
 
