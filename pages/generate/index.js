@@ -71,7 +71,7 @@ export default function Generate() {
     return (
         <div className="h-screen w-screen">
             <div className={'h-full flex flex-col'}>
-                <div className="ml-10 w-min max-h-min"><Logo /></div>
+                <div className="ml-10 w-min max-h-min"><Logo showBack={true}/></div>
                 <div className="absolute right-5 top-5">
                     <Menu/>
                 </div>

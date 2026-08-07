@@ -63,7 +63,7 @@ export default function UploadSheetButton({handleFile, setSheet, caption, disabl
           <p className={`${styles.caption}`}>{caption}</p>
         </div>
       </div>
-      {showOverlay && <UploadOverlay 
+      {<UploadOverlay 
       showOverlay={showOverlay}
       hideOverlay={hideOverlay}
       caption={"Upload " + caption}
