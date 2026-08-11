@@ -56,3 +56,7 @@
 .activeButton {
   background-color: #5b4228;
 }
+.activeButton:hover {
+  background-color: #4c3721;
+  transition: all 100ms ease-in-out;
+}

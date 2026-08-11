@@ -18,7 +18,9 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
   }
 
   return (
-    <div className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC]`}>
+    <div className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC] 
+    ${showOverlay ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+    transition-opacity duration-200 ease-in-out`}>
       <h1 className={`${styles.headerText}  text-xl`}>{caption}</h1>
       <div className="flex m-4">
       </div>
@@ -35,12 +37,12 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
           <h1 className={``}>Upload Local File</h1>
         </div>        
       </div>
-      <div className={`w-176 bg-stone-700
-       rounded-lg flex items-center justify-center mt-8 py-3 cursor-pointer`}
+      <div className={`w-176 bg-stone-600
+       rounded-lg flex items-center justify-center mt-8 py-3 cursor-pointer hover:bg-stone-700 transition duration-100`}
        onClick={hideOverlay}>
         <h1 className={``}>Back</h1>
       </div>
-      {showGooglePicker && <GoogleDriveOverlay showOverlay={showGooglePicker} hideOverlay={hideGooglePicker} gDriveFileUpload={gDriveFileUpload}/>}
+      <GoogleDriveOverlay showOverlay={showGooglePicker} hideOverlay={hideGooglePicker} gDriveFileUpload={gDriveFileUpload}/>
     </div>
   )
 }

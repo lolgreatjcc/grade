@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { handleSignOut, handleSignIn } from '@/utils/googleAuth';
 import ItemSelect from './ItemSelect';
 
-export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, gDriveFileUpload, caption = "Select a File" }) {
+export default function GoogleDriveOverlay({ showOverlay, hideOverlay, gDriveFileUpload, caption = "Select a File" }) {
   const [showGooglePicker, setShowGooglePicker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
@@ -70,7 +70,7 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
   // on overlay load, get the root directory data
   useEffect(() => {
     if (showOverlay) handleInitialData();
-  }, [session, status]);
+  }, [session, status, showOverlay]);
 
   // when the file has been confirmed, download
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
 
             // fake event to reuse function expecting event.target.files
             const fakeEvent = {'target': {'files': [file]}}
-            gDriveFileUpload(fakeEvent);
+            gDriveFileUpload(fakeEvent, hideOverlay);
 
           } catch (error) {
             console.error('Error fetching file:', error);
@@ -122,7 +122,9 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
   }
 
   return (
-    <div className={`${styles.generateOverlayParent} z-51 text-[#FFFFFFCC]`}>
+    <div className={`${styles.generateOverlayParent} z-51 text-[#FFFFFFCC]
+     ${showOverlay ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+    transition-opacity duration-200 ease-in-out`}>
       <h1 className={`${styles.headerText}  text-xl mb-2`}>{caption}</h1>
       <div className="w-3/5 h-4/7 border rounded-md overflow-scroll py-4 px-6">
         {isLoading && 
@@ -137,7 +139,7 @@ export default function GoogleDriveOverlay({ showOverlay = false, hideOverlay, g
         )}
       </div>
       <div className={'flex w-3/5 p-2 justify-center'}>
-        <div className='w-50 bg-stone-700 rounded items-center cursor-pointer' onClick={hideOverlay}>
+        <div className='w-50 bg-stone-600 rounded items-center cursor-pointer hover:bg-stone-700 transition duration-100' onClick={hideOverlay}>
           <h1 className={`text-center my-5`}>Back</h1>
         </div>
         <div className={`w-50 ${selectedFileId ? styles.activeButton : "bg-stone-700"} 

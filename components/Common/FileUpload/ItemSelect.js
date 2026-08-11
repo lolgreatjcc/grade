@@ -37,7 +37,7 @@ export default function ItemSelect({selectedFileId, setSelectedFileId, file, fet
 
   return (
     <div className="cursor-pointer mx-4">
-      <div className={`flex items-center py-2 pl-2 hover:bg-[#81592f] transition duration-180 ease-in-out
+      <div className={`flex items-center py-2 pl-2 hover:bg-[#81592f] transition duration-150 ease-in-out
         ${isSelected ? styles.activeButton : ''}`} onClick={handleOnClick}>
         <Image className="w-[16px] h-[16px]" alt="img" width={16} height={16} src={file.icon}/>
         <h1 className={"ml-2"}>{file.name}</h1>
