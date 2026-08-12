@@ -9,6 +9,19 @@ import GoogleDriveOverlay from './GoogleDriveOverlay';
 export default function UploadOverlay({ showOverlay = false, hideOverlay, localFileUpload, gDriveFileUpload, caption}) {
   const [showGooglePicker, setShowGooglePicker] = useState(false);
 
+  useEffect(() => {
+    const handleEsc = (event) => {
+
+      if(showOverlay && event.key == "Escape") {
+        hideOverlay();
+      }
+    }
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    }
+  }, [])
+
   const getGoogleDriveFile = async () => {
     setShowGooglePicker(true);
   }
