@@ -18,13 +18,13 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
   }
 
   return (
-    <div className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC] 
+    <div onClick={hideOverlay} className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC] 
     ${showOverlay ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
     transition-opacity duration-200 ease-in-out`}>
       <h1 className={`${styles.headerText}  text-xl`}>{caption}</h1>
       <div className="flex m-4">
       </div>
-      <div className='flex items-center'>
+      <div onClick={(event) => event.stopPropagation()} className='flex items-center'>
         <div className={`w-80 h-110 ${styles.activeButton} 
         rounded-lg flex items-center justify-center cursor-pointer`}
           onClick={getGoogleDriveFile}>
