@@ -6,6 +6,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { google } from 'googleapis';
 import UploadOverlay from "./UploadOverlay";
+import { delay, motion } from "motion/react";
+
 
 export default function UploadSheetButton({handleFile, setSheet, caption, disabled = false}) {
   const [fileStatus, setFileStatus] = useState(null);
@@ -43,11 +45,18 @@ export default function UploadSheetButton({handleFile, setSheet, caption, disabl
   const hideOverlay = () => {
     setShowOverlay(false);
   };
+  
+  const transitionAnimation ={ 
+    ease: 'linear',
+    delay: 0.1,
+    duration: 0.1,
+    layout: {duration: 0.2}
+  }
 
-
+  
 
   return (
-    <div>
+    <motion.div style={{opacity: 0}} layout transition={transitionAnimation} animate={{ opacity: 1}}>
       <div className={`${showFileStatus(fileStatus)} bg-white w-70 h-99 rounded-md 
       mx-8 my-4 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} relative overflow-hidden`}
       onClick={handleUploadClick}>
@@ -71,7 +80,7 @@ export default function UploadSheetButton({handleFile, setSheet, caption, disabl
       localFileUpload={triggerLocalUpload}
       gDriveFileUpload={triggerGoogleDriveUpload}
       />}
-    </div>
+    </motion.div>
     
 
   )
