@@ -12,15 +12,16 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
   useEffect(() => {
     const handleEsc = (event) => {
 
-      if(showOverlay && event.key == "Escape") {
+      if(showOverlay && event.key === "Escape") {
         hideOverlay();
+        
       }
     }
     document.addEventListener('keydown', handleEsc);
     return () => {
       document.removeEventListener('keydown', handleEsc);
     }
-  }, [])
+  }, [showOverlay])
 
   const getGoogleDriveFile = async () => {
     setShowGooglePicker(true);
