@@ -57,7 +57,7 @@ export default function GenerateOverlay({ showOverlay = false, hideOverlay, qnNu
     <div className={`${styles.generateOverlayParent}`}>
       <h1 className={`${styles.headerText}  text-xl`}>Generate from Question Paper</h1>
       <div className="flex m-10">
-        <UploadSheetButton handleFile={handleFile} setSheet={setQnSheet} 
+        <UploadSheetButton handleFile={handleFile} setSheet={setQnSheet} title="Question Paper" description="Sheet showing just the questions"
         caption={"Question Paper"} disabled={requestStarted}/>
         {!requestStarted ? null :
           qnNumbers === null ?
