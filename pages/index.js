@@ -59,11 +59,14 @@ export default function Home() {
       >
         <div className="flex">
 
-          <UploadSheetButton setSheet={setAnswerSheet} handleFile={handleFile} 
+          <UploadSheetButton setSheet={setAnswerSheet} handleFile={handleFile}
           caption={'Answer Sheet'} disabled={loading}/>
-          {supplementQuestionPaper && <UploadSheetButton setSheet={setQuestionPaper} 
+          {supplementQuestionPaper && <UploadSheetButton setSheet={setQuestionPaper} title="Question Paper"
+          description="Sheet showing just the questions"
           handleFile={handleFile} caption={'Question Paper'} disabled={loading}/>}
           <UploadSheetButton setSheet={setAnswerKey} handleFile={handleFile} 
+          title="Answer Key"
+          description="Contains the correct answers for all questions"
           caption={'Answer Key'} disabled={loading}/>
 
         </div>

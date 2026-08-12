@@ -16,3 +16,8 @@
     cursor: pointer;
     border-bottom: 1px solid #E7E0D0CC;
 }
+
+.menuItemContainer {
+  width: 300;
+  height: 50vh;
+}
