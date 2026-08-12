@@ -1,7 +1,7 @@
 ﻿import Image from "next/image";
 import styles from "./LandingButtons.module.css"
 import { useSession } from 'next-auth/react';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { google } from 'googleapis';
@@ -9,7 +9,7 @@ import UploadOverlay from "./UploadOverlay";
 import { delay, motion } from "motion/react";
 
 
-export default function UploadSheetButton({handleFile, setSheet, caption, disabled = false}) {
+export default function UploadSheetButton({handleFile, setSheet, caption, disabled = false, title = "Answer Sheet", description = "Upload a sheet showing your questions and answers"}) {
   const [fileStatus, setFileStatus] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -45,6 +45,8 @@ export default function UploadSheetButton({handleFile, setSheet, caption, disabl
   const hideOverlay = () => {
     setShowOverlay(false);
   };
+
+  const [isHovered, setIsHovered] = useState(false);
   
   const transitionAnimation ={ 
     ease: 'linear',
@@ -53,16 +55,51 @@ export default function UploadSheetButton({handleFile, setSheet, caption, disabl
     layout: {duration: 0.2}
   }
 
+  const overlayVariants = {
+    rest: {
+      top: "-50%",
+    },
+    hover: {
+      top: "-5%",
+      transition: {
+        duration: 0.2,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  }
+
+  const textContainerVariants = {
+    rest: {
+      opacity: 0
+    },
+    hover: {
+      opacity: 1,
+      transition: {
+        duration: 0.1,
+        delay: 0.2
+      }
+    }
+  }
+
+  
+
+
   
 
   return (
     <motion.div style={{opacity: 0}} layout transition={transitionAnimation} animate={{ opacity: 1}}>
-      <div className={`${showFileStatus(fileStatus)} bg-white w-70 h-99 rounded-md 
+      <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className={`${showFileStatus(fileStatus)} bg-white w-70 h-99 rounded-md 
       mx-8 my-4 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'} relative overflow-hidden`}
       onClick={handleUploadClick}>
         <Image className="max-w-100 max-h-100" alt="img" fill={true} 
         src={previewImage ? previewImage : 'https://picsum.photos/200/300'}/>
         <div className={`${styles.overlay}`}>
+          <motion.div variants={overlayVariants} animate={isHovered ? 'hover': 'rest'}  className={`${styles.uploadButtonOverlay}`} />
+          <motion.div variants={textContainerVariants} animate={isHovered ? 'hover': 'rest'} className={`${styles.uploadButtonOverlayTextContainer}`}>
+            <p className={`${styles.uploadButtonOverlayTextHeader}`}>{title}</p>
+            <p className={`${styles.uploadButtonOverlayText}`}>{description}</p>
+          </motion.div>
+
           <input className={`${styles.fileInput}`} type="file" accept=".pdf" 
           onChange={handleSheet} color="rgba(0,0,0,0)" ref={inputRef}/>
           <svg className={`${styles.uploadIcon}`} xmlns="http://www.w3.org/2000/svg" 

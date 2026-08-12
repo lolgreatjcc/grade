@@ -75,3 +75,29 @@
   justify-content: center;
   color: #BAA678;
 }
+
+.uploadButtonOverlay {
+  position: absolute;
+  background-image: linear-gradient(to bottom, #1c150dff 10%, #1c150d4d 90%);
+  height: 45%;
+  width: 150%;
+  rotate: -5deg;
+  left: -5%;
+}
+
+.uploadButtonOverlayTextContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 15;
+}
+
+.uploadButtonOverlayTextHeader {
+  color: #EFE7D9;
+  padding-top: 15;
+  padding-bottom: 15;
+  font-weight: bold;
+}
+.uploadButtonOverlayText {
+  color: #EFE7D9;
+}
