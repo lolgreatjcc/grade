@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react';
 import { handleSignOut, handleSignIn } from '@/utils/googleAuth';
 import { useState } from 'react';
+import { motion } from "motion/react";
+
 
 export default function Menu() {
     const [expanded, setExpanded] = useState(false);
@@ -42,8 +44,8 @@ export default function Menu() {
                         </g>
                     </svg>
                 </div>
-                <div className={`${styles.menuItem} mx-3 mt-1 mb-3`} onClick={handleLoginButton}><h1 className={`${styles.menuItemText}`}>{session ? "Sign Out" : "Login"}</h1></div>
-                <div className={`${styles.menuItem} m-3`} onClick={handleGenerateButton}><h1 className={`${styles.menuItemText}`}>Generate Answer Sheet</h1></div>
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.1, ease: "easeOut" }} className={`${styles.menuItem} mx-3 mt-1 mb-3`} onClick={handleLoginButton}><h1 className={`${styles.menuItemText}`}>{session ? "Sign Out" : "Login"}</h1></motion.div>
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.1, ease: "easeOut", delay: 0.1 }} className={`${styles.menuItem} m-3`} onClick={handleGenerateButton}><h1 className={`${styles.menuItemText}`}>Generate Answer Sheet</h1></motion.div>
             </div> 
             :
             <div className={`${styles.iconContainer}`}>
