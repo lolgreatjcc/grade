@@ -48,7 +48,7 @@ export default function Menu() {
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.1, ease: "easeOut", delay: 0.1 }} className={`${styles.menuItem} m-3`} onClick={handleGenerateButton}><h1 className={`${styles.menuItemText}`}>Generate Answer Sheet</h1></motion.div>
             </div> 
             :
-            <div className={`${styles.iconContainer}`}>
+            <div onMouseEnter={handleMenuButton} className={`${styles.iconContainer}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" stroke="#FFFFFFCC" fill="none" onClick={handleMenuButton}>
                     <path fill="#FFFFFFCC" d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z" />
                 </svg>
