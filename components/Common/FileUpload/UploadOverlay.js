@@ -14,7 +14,7 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
 
       if(showOverlay && event.key === "Escape") {
         hideOverlay();
-        
+        hideGooglePicker();
       }
     }
     document.addEventListener('keydown', handleEsc);
@@ -31,8 +31,12 @@ export default function UploadOverlay({ showOverlay = false, hideOverlay, localF
     setShowGooglePicker(false)
   }
 
+  const hideIfGoogleInactive = () => {
+    if (!showGooglePicker) hideOverlay();
+  }
+
   return (
-    <div onClick={hideOverlay} className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC] 
+    <div onClick={hideIfGoogleInactive} className={`${styles.generateOverlayParent} z-50 text-[#FFFFFFCC] 
     ${showOverlay ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
     transition-opacity duration-200 ease-in-out`}>
       <h1 className={`${styles.headerText}  text-xl`}>{caption}</h1>
